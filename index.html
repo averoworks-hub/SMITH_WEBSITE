@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMITH (UK) | Official Site</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050505;
+        }
+
+        /* ── Ken Burns ───────────────────────────────────────────────────── */
+        @keyframes kenburns {
+            0%   { transform: scale(1)    translate(0, 0); }
+            100% { transform: scale(1.12) translate(-1.5%, -1.5%); }
+        }
+        .ken-burns-bg {
+            animation: kenburns 24s ease-in-out infinite alternate;
+        }
+
+        /* ── Glassmorphism Navigation ────────────────────────────────────── */
+        .nav-glass {
+            background: linear-gradient(
+                135deg,
+                rgba(5, 5, 5, 0.72) 0%,
+                rgba(12, 12, 12, 0.62) 100%
+            );
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+            box-shadow:
+                0 1px 0 rgba(20, 184, 166, 0.15),
+                0 8px 32px rgba(0, 0, 0, 0.6);
+        }
+        /* Teal shimmer line across the very top of the nav */
+        .nav-glass::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(20, 184, 166, 0.35) 50%,
+                transparent 100%
+            );
+            pointer-events: none;
+        }
+
+        /* ── Hero Title — original scale, wide-spaced Inter 900 ────────────── */
+        .hero-title {
+            font-size: clamp(3.75rem, 9vw, 7.5rem); /* matches text-6xl → text-9xl */
+            font-weight: 900;
+            font-variation-settings: 'opsz' 32, 'wght' 900;
+            letter-spacing: 0.06em;
+            line-height: 0.95;
+            text-transform: uppercase;
+        }
+        .hero-title-outline {
+            /* Source colour must be opaque so feMorphology has an alpha
+               channel to trace. The filter replaces the visible output
+               with a clean outline, so the fill colour never shows. */
+            color: white;
+            filter: url(#clean-outline);
+        }
+
+        /* ── EP Artwork Teal Aura ────────────────────────────────────────── */
+        @keyframes aura-pulse {
+            0%, 100% {
+                box-shadow:
+                    0 0 25px  5px rgba(20, 184, 166, 0.20),
+                    0 0 70px 18px rgba(20, 184, 166, 0.11),
+                    0 0 150px 40px rgba(20, 184, 166, 0.05);
+            }
+            50% {
+                box-shadow:
+                    0 0 38px 10px rgba(20, 184, 166, 0.30),
+                    0 0 95px 28px rgba(20, 184, 166, 0.16),
+                    0 0 190px 55px rgba(20, 184, 166, 0.08);
+            }
+        }
+        .ep-aura {
+            animation: aura-pulse 5s ease-in-out infinite;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        /* ── Scroll Reveal ───────────────────────────────────────────────── */
+        [data-reveal] {
+            opacity: 0;
+            transform: translateY(28px);
+            transition:
+                opacity  1s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        [data-reveal].is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        [data-reveal-delay="100"] { transition-delay: 0.10s; }
+        [data-reveal-delay="200"] { transition-delay: 0.20s; }
+        [data-reveal-delay="300"] { transition-delay: 0.30s; }
+        [data-reveal-delay="400"] { transition-delay: 0.40s; }
+        [data-reveal-delay="500"] { transition-delay: 0.50s; }
+        [data-reveal-delay="600"] { transition-delay: 0.60s; }
+        [data-reveal-delay="700"] { transition-delay: 0.70s; }
+
+        /* ── Music Section — Tracks & Mixes ─────────────────────────────── */
+        .music-heading {
+            font-weight: 900;
+            font-variation-settings: 'opsz' 32, 'wght' 900;
+            letter-spacing: 0.06em;
+            line-height: 1;
+            text-transform: uppercase;
+            font-size: clamp(2.25rem, 4.5vw, 3.75rem);
+        }
+        .listen-card {
+            background: #000000;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            border-radius: 12px;
+            padding: 20px;
+            overflow: hidden;
+        }
+        .listen-card iframe {
+            display: block;
+            border-radius: 8px;
+            overflow: hidden;
+            filter: invert(0.08);
+        }
+        .listen-card-teal {
+            box-shadow: 0 0 40px rgba(20, 184, 166, 0.15);
+        }
+        .listen-card-amber {
+            box-shadow: 0 0 40px rgba(245, 158, 11, 0.15);
+        }
+
+        /* ── Services Section ───────────────────────────────────────────── */
+        .service-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow 0.4s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .service-card-teal  { border-top: 2px solid #14b8a6; }
+        .service-card-amber { border-top: 2px solid #f59e0b; }
+        .service-card-teal:hover  { box-shadow: 0 0 35px rgba(20, 184, 166, 0.12); }
+        .service-card-amber:hover { box-shadow: 0 0 35px rgba(245, 158, 11, 0.10); }
+        .service-heading {
+            font-weight: 900;
+            font-variation-settings: 'opsz' 32, 'wght' 900;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-size: 1rem;
+            line-height: 1.3;
+        }
+        .service-tier {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding-bottom: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        .service-tier:last-of-type { border-bottom: none; margin-bottom: 0; }
+
+        /* ── Contact Form ────────────────────────────────────────────────── */
+        .form-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            border-radius: 6px;
+            padding: 0.875rem 1rem;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        .form-input::placeholder { color: rgba(255, 255, 255, 0.22); }
+        .form-input:focus {
+            border-color: #14b8a6;
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.12);
+        }
+        .form-input option { background: #111111; color: white; }
+
+        /* ── Vibe Film Strip ─────────────────────────────────────────────── */
+
+        /* Section cursor-glow — radial teal shimmer follows mouse */
+        #vibe {
+            position: relative;
+            --vibe-glow-x: 50%;
+            --vibe-glow-y: 50%;
+        }
+        #vibe::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background: radial-gradient(
+                800px circle at var(--vibe-glow-x) var(--vibe-glow-y),
+                rgba(20, 184, 166, 0.08) 0%,
+                transparent 100%
+            );
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        #vibe.vibe-glow-on::before { opacity: 1; }
+        /* Ensure all direct children sit above the glow layer */
+        #vibe > * { position: relative; z-index: 1; }
+
+        /* Glassmorphism card wrapper — grain overlay via ::after */
+        .vibe-strip-card {
+            position: relative;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        /* Film-grain texture — low-opacity SVG noise tiles over the strip */
+        .vibe-strip-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+            pointer-events: none;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-size: 180px 180px;
+            background-repeat: repeat;
+        }
+
+        /* Horizontal film strip */
+        .vibe-strip {
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            gap: 24px;
+            padding: 14px 20px;
+            height: 450px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #14b8a6 rgba(0, 0, 0, 0.5);
+            cursor: grab;
+        }
+        .vibe-strip:active { cursor: grabbing; }
+        /* Teal scrollbar — Chrome/Safari */
+        .vibe-strip::-webkit-scrollbar        { height: 4px; }
+        .vibe-strip::-webkit-scrollbar-track  { background: rgba(0, 0, 0, 0.45); }
+        .vibe-strip::-webkit-scrollbar-thumb  { background: #14b8a6; border-radius: 2px; }
+        .vibe-strip::-webkit-scrollbar-thumb:hover { background: #0d9488; }
+
+        /* Individual items: rounded corners + hairline border */
+        .vibe-item {
+            position: relative;
+            flex-shrink: 0;
+            overflow: hidden;
+            cursor: pointer;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .vibe-item img,
+        .vibe-item video {
+            height: 100%;
+            width: auto;
+            display: block;
+            filter: grayscale(0.5) brightness(0.8);
+            transition:
+                filter    0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+        .vibe-item:hover img,
+        .vibe-item:hover video {
+            filter: grayscale(0) brightness(1);
+            transform: scale(1.04);
+        }
+
+        /* Featured hero item — fixed 600px wide, fills container */
+        .vibe-item.vibe-featured { width: 600px; }
+        .vibe-item.vibe-featured img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Image zoom — object-fit:cover + scale(1.3) fills the frame for vibe-7.jpg */
+        .vibe-item.vibe-zoom { width: 500px; }
+        .vibe-item.vibe-zoom img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover;
+            transform: scale(1.3);
+        }
+        .vibe-item.vibe-zoom:hover img { transform: scale(1.34); }
+
+        .vibe-play-badge {
+            position: absolute;
+            bottom: 10px; right: 10px;
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.60);
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            backdrop-filter: blur(6px);
+            display: flex; align-items: center; justify-content: center;
+            pointer-events: none;
+            z-index: 2;
+        }
+        @media (max-width: 767px) {
+            .vibe-strip { height: 260px; gap: 12px; padding: 10px 14px; }
+            .vibe-item.vibe-featured { width: 340px; }
+            .vibe-item.vibe-zoom     { width: 300px; }
+        }
+
+        /* ── Social Dock — Blade (local SVG icons, fit-content) ────────────── */
+        #social-dock {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(14px);
+            z-index: 8000;
+            opacity: 0;
+            pointer-events: none;
+            transition:
+                opacity   0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #social-dock.dock-visible {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /*
+          width: fit-content — blade collapses to exactly its content.
+          padding: 12px 24px — identical vertical & horizontal breathing room.
+          gap: 32px (gap-8) — uniform mathematical space between every icon.
+          No fixed height — the 12px vertical padding + 24px icon = natural height.
+        */
+        .dock-blade {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: fit-content;
+            gap: 32px;
+            padding: 12px 24px;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(18px) saturate(170%);
+            -webkit-backdrop-filter: blur(18px) saturate(170%);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-left: 3px solid #14b8a6;
+            border-radius: 4px;
+            box-shadow:
+                0 0 22px rgba(20, 184, 166, 0.20),
+                0 14px 30px rgba(0, 0, 0, 0.75),
+                inset 6px 0 18px rgba(20, 184, 166, 0.09);
+        }
+
+        /* Icon links — no fixed width, flex centres the img naturally */
+        .dock-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+
+        /*
+          height: 24px — uniform for all four icons.
+          width: auto — preserves each SVG's natural aspect ratio.
+          Default: brightness(0) invert(1) = pure white, then opacity dims to ~45%.
+          Transition covers both filter and opacity for a smooth colour swap.
+        */
+        .dock-icon img {
+            height: 24px;
+            width: auto;
+            display: block;
+            filter: brightness(0) invert(1);
+            opacity: 0.45;
+            transition: filter 0.22s ease, opacity 0.22s ease;
+        }
+
+        /*
+          SoundCloud's waveform bars are visually lighter at 24px —
+          bump height slightly so its optical mass matches the other logos.
+        */
+        .dock-icon[aria-label="SoundCloud"] img { height: 28px; }
+
+        /*
+          Hover teal: filter chain converts black SVG → #14b8a6.
+          Pipeline: invert grey → warm sepia tint → saturate →
+          hue-rotate into cyan-teal range → fine-tune brightness/contrast.
+        */
+        .dock-icon:hover img {
+            filter: invert(66%) sepia(56%) saturate(374%) hue-rotate(135deg) brightness(88%) contrast(91%);
+            opacity: 1;
+        }
+
+        @media (max-width: 767px) {
+            #social-dock          { bottom: 12px; }
+            .dock-blade           { gap: 24px; padding: 10px 18px; }
+            .dock-icon img        { height: 20px; }
+            .dock-icon[aria-label="SoundCloud"] img { height: 23px; }
+        }
+
+        /* ── Minimal footer ─────────────────────────────────────────────── */
+        .footer-minimal {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            /* bottom pad clears the fixed dock (54px + 24px gap + 10px buffer) */
+            padding: 24px 0 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;   /* centred, aligns with blade dock below */
+            gap: 48px;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+        .footer-minimal p,
+        .footer-minimal a {
+            font-size: 0.62rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: rgba(255, 255, 255, 0.22);
+            text-decoration: none;
+            white-space: nowrap;
+            transition: color 0.2s ease;
+        }
+        .footer-minimal a:hover { color: #14b8a6; }
+        @media (max-width: 767px) {
+            .footer-minimal { flex-direction: column; gap: 12px; text-align: center; padding-bottom: 82px; }
+        }
+
+        /* ── Vibe Lightbox ───────────────────────────────────────────────── */
+        #vibe-lb {
+            position: fixed; inset: 0; z-index: 9000;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(0, 0, 0, 0.93);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        #vibe-lb.open { opacity: 1; pointer-events: all; }
+        #vibe-lb-media {
+            max-width: min(90vw, 1200px);
+            max-height: 88vh;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #vibe-lb-media img,
+        #vibe-lb-media video {
+            max-width: 100%; max-height: 88vh;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            object-fit: contain;
+        }
+        .vibe-lb-ui {
+            position: fixed;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: white;
+            backdrop-filter: blur(8px);
+            transition: background 0.2s, border-color 0.2s;
+            z-index: 9001;
+        }
+        .vibe-lb-ui:hover { background: rgba(20, 184, 166, 0.28); border-color: #14b8a6; }
+        #vibe-lb-close  { top: 20px;  right: 20px; width: 40px; height: 40px; font-size: 1rem; }
+        #vibe-lb-prev   { top: 50%;   left:  20px; width: 44px; height: 44px; font-size: 1.2rem; transform: translateY(-50%); }
+        #vibe-lb-next   { top: 50%;   right: 20px; width: 44px; height: 44px; font-size: 1.2rem; transform: translateY(-50%); }
+        #vibe-lb-counter {
+            position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.45); font-size: 0.7rem;
+            letter-spacing: 0.15em; z-index: 9001; pointer-events: none;
+        }
+
+        /* ── Shared utilities ────────────────────────────────────────────── */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(20, 184, 166, 0.2);
+        }
+        .accent-amber     { color: #f59e0b; }
+        .bg-accent-amber  { background-color: #f59e0b; }
+        .border-accent-teal { border-color: #14b8a6; }
+
+        /* ── Brand Ticker ──────────────────────────────────────────────────── */
+        @keyframes ticker-scroll {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
+        }
+        .ticker-track {
+            display: flex;
+            width: max-content;
+            animation: ticker-scroll 50s linear infinite;
+        }
+        .ticker-track:hover { animation-play-state: paused; }
+        /*
+          mask-image fades the names in from the left edge and out into
+          the right edge — brands emerge from and dissolve into darkness.
+        */
+        .ticker-wrap {
+            overflow: hidden;
+            -webkit-mask-image: linear-gradient(
+                to right,
+                transparent 0%,
+                black 14%,
+                black 86%,
+                transparent 100%
+            );
+            mask-image: linear-gradient(
+                to right,
+                transparent 0%,
+                black 14%,
+                black 86%,
+                transparent 100%
+            );
+        }
+        .ticker-item {
+            display: inline-flex;
+            align-items: center;
+            padding: 0 5rem;          /* mx-20 — breathing room between names */
+            font-size: 1.25rem;       /* text-xl → bumped to feel cinematic */
+            font-weight: 900;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            color: rgba(255, 255, 255, 0.30);
+            transition: color 0.3s ease, filter 0.3s ease;
+            cursor: default;
+        }
+        /* Separator dot between each brand */
+        .ticker-item::after {
+            content: '✦';
+            padding-left: 5rem;
+            font-size: 0.5em;
+            opacity: 0.3;
+            letter-spacing: 0;
+        }
+        .ticker-item:hover {
+            color: #2dd4bf;           /* teal-400 */
+            filter: drop-shadow(0 0 15px rgba(20, 184, 166, 0.4));
+        }
+        @media (max-width: 767px) {
+            .ticker-item {
+                font-size: 0.85rem;
+                padding: 0 2.5rem;
+                letter-spacing: 0.25em;
+            }
+            .ticker-item::after { padding-left: 2.5rem; }
+            /* extra bottom clearance on contact so the dock never sits over Send */
+            #contact { padding-bottom: 8rem; }
+        }
+    </style>
+</head>
+<body class="text-white antialiased">
+
+    <!-- SVG filter definitions — zero-size, not visible in layout -->
+    <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute;overflow:hidden">
+        <defs>
+            <!--
+                clean-outline: morphology-based text outline filter.
+                Works on the rasterised pixel alpha of the element, so all
+                glyph segments (including the K diagonals) are already merged
+                into one solid bitmap shape before the outline is computed.
+                No stroke segments, no overlaps, no artefacts.
+
+                Step 1 — dilate:  expand every opaque pixel outward by 1.5px
+                Step 2 — out:     expanded shape MINUS original shape = 1.5px border ring
+                Step 3 — flood:   define solid white colour
+                Step 4 — in:      apply white only inside the border ring
+            -->
+            <filter id="clean-outline"
+                    x="-5%" y="-15%"
+                    width="115%" height="140%"
+                    color-interpolation-filters="sRGB">
+                <feMorphology in="SourceAlpha" operator="dilate" radius="1.5" result="expanded"/>
+                <feComposite  in="expanded"    in2="SourceAlpha" operator="out" result="ring"/>
+                <feFlood      flood-color="rgba(255,255,255,0.92)"               result="white"/>
+                <feComposite  in="white"       in2="ring"        operator="in"/>
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- NAVIGATION ──────────────────────────────────────────────────────── -->
+    <nav class="nav-glass fixed w-full z-50 px-6 py-4 flex justify-between items-center">
+        <a href="#" aria-label="Return to top" class="flex-shrink-0">
+            <img src="logo.png" alt="SMITH (UK) Logo" class="h-8 md:h-10 brightness-0 invert">
+        </a>
+        <div class="hidden md:flex space-x-8 text-xs uppercase tracking-widest font-bold">
+            <a href="#bio"       class="hover:text-teal-400 transition duration-300">Bio</a>
+            <a href="#music"     class="hover:text-teal-400 transition duration-300">Music</a>
+            <a href="#listen"    class="hover:text-teal-400 transition duration-300">Listen Now</a>
+            <a href="#heritage"  class="hover:text-teal-400 transition duration-300">Heritage</a>
+            <a href="#live"      class="hover:text-teal-400 transition duration-300">Live</a>
+            <a href="#vibe"      class="hover:text-teal-400 transition duration-300">Vibe</a>
+            <a href="#services"  class="hover:text-teal-400 transition duration-300">Services</a>
+            <a href="#rider"     class="hover:text-teal-400 transition duration-300">Rider</a>
+            <a href="#contact"   class="accent-amber hover:text-amber-300 transition duration-300">Booking</a>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION ────────────────────────────────────────────────────── -->
+    <section class="relative h-screen w-full overflow-hidden flex items-end pb-20 px-6 md:px-20">
+        <div class="absolute inset-0 z-0">
+            <img
+                src="Press_Shot_1.jpg"
+                alt="SMITH (UK)"
+                class="ken-burns-bg w-full h-full object-cover opacity-60"
+            >
+            <!-- Deeper, more immersive gradient fade -->
+            <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/30 to-transparent"></div>
+        </div>
+
+        <div class="relative z-10 max-w-5xl">
+            <h2 class="text-teal-400 text-sm md:text-base font-bold uppercase tracking-[0.35em] mb-4 opacity-90">
+                London-Based DJ &amp; Producer
+            </h2>
+            <h1 class="hero-title">
+                SMITH <span class="hero-title-outline">(UK)</span>
+            </h1>
+            <p class="mt-8 text-lg md:text-xl text-gray-300 max-w-xl font-light italic leading-relaxed">
+                "Rolling, soulful house with jazzy undertones and a sharp, rhythmic nod to speed garage."
+            </p>
+        </div>
+    </section>
+
+    <!-- TRUSTED BY — Editorial Scrolling Ticker ────────────────────────── -->
+    <div class="ticker-wrap py-10 border-b border-white/5">
+        <div class="ticker-track">
+            <!-- Set 1 -->
+            <span class="ticker-item">Ministry of Sound</span>
+            <span class="ticker-item">Egg London</span>
+            <span class="ticker-item">Sankeys</span>
+            <span class="ticker-item">Studio 338</span>
+            <span class="ticker-item">Eden Ibiza</span>
+            <span class="ticker-item">LSA</span>
+            <span class="ticker-item">Beatport</span>
+            <span class="ticker-item">Bandcamp</span>
+            <span class="ticker-item">Domus Music</span>
+            <span class="ticker-item">Pioneer DJ</span>
+            <!-- Set 2 — exact duplicate for seamless infinite loop -->
+            <span class="ticker-item">Ministry of Sound</span>
+            <span class="ticker-item">Egg London</span>
+            <span class="ticker-item">Sankeys</span>
+            <span class="ticker-item">Studio 338</span>
+            <span class="ticker-item">Eden Ibiza</span>
+            <span class="ticker-item">LSA</span>
+            <span class="ticker-item">Beatport</span>
+            <span class="ticker-item">Bandcamp</span>
+            <span class="ticker-item">Domus Music</span>
+            <span class="ticker-item">Pioneer DJ</span>
+        </div>
+    </div>
+
+    <!-- BIO SECTION ─────────────────────────────────────────────────────── -->
+    <section id="bio" class="py-24 px-6 md:px-20 max-w-7xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-16 items-center">
+            <div class="space-y-6 text-gray-400 leading-relaxed text-lg font-light">
+                <h3 class="text-3xl font-bold text-white mb-8 tracking-tight" data-reveal>The Journey</h3>
+                <p data-reveal data-reveal-delay="100">London-based DJ and producer SMITH (UK) has spent nearly two decades at the heart of the house music scene, cultivating a sound defined by rolling grooves, soulful jazz undertones, and a sharp, rhythmic nod to speed garage.</p>
+                <p data-reveal data-reveal-delay="200">With 17 years of experience behind the decks, SMITH's technical proficiency is matched only by his curation. Whether navigating the timeless feel of vinyl or modern digital setups, his sets are built for the floor—deep, warm, and relentlessly upbeat.</p>
+                <p data-reveal data-reveal-delay="300">Transitioning from his previous alias (S.M.I.T.H) to his current identity, the SMITH (UK) project represents a refined evolution of his craft. His production output is a testament to this, consistently hitting the upper echelons of the Beatport charts.</p>
+            </div>
+            <div class="relative" data-reveal data-reveal-delay="200">
+                <img src="Press_Shot_2.jpg" alt="In the Studio" loading="lazy" class="rounded-sm border border-white/10 transition duration-700">
+                <div class="absolute -bottom-6 -right-6 w-32 h-32 border-r-2 border-b-2 border-teal-500"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MUSIC / LATEST RELEASE ──────────────────────────────────────────── -->
+    <section id="music" class="py-24 bg-[#0a0a0a] px-6 md:px-20 border-y border-white/5">
+        <div class="max-w-7xl mx-auto text-center">
+            <h2 class="text-xs uppercase tracking-[0.5em] text-teal-500 font-bold mb-4" data-reveal>Latest Release</h2>
+            <h3 class="text-4xl md:text-6xl font-bold mb-12" data-reveal data-reveal-delay="100">What More Can I Say EP</h3>
+
+            <div class="flex flex-col md:flex-row items-center justify-center gap-12">
+                <!-- Teal aura glow wrapper -->
+                <div class="w-full max-w-md ep-aura" data-reveal data-reveal-delay="200">
+                    <img src="What_More_Can_I_Say_EP.png" alt="EP Artwork" loading="lazy" class="w-full block rounded-md">
+                </div>
+                <div class="flex flex-col space-y-6 text-left" data-reveal data-reveal-delay="300">
+                    <div class="flex items-center space-x-4">
+                        <span class="bg-accent-amber text-black px-3 py-1 text-xs font-black uppercase">Beatport #1</span>
+                        <span class="text-gray-500 text-sm uppercase tracking-widest">Out Now</span>
+                    </div>
+                    <p class="text-gray-400 max-w-sm">Featuring his signature rolling groove, this EP has become a staple for industry heavyweights worldwide.</p>
+                    <a href="https://www.beatport.com/artist/smith-uk/1507983" target="_blank"
+                       class="inline-block bg-white text-black font-bold py-4 px-10 text-center hover:bg-teal-500 hover:text-white transition duration-300 uppercase tracking-widest text-sm">
+                        Buy It Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LISTEN NOW — TRACKS & MIXES ─────────────────────────────────────── -->
+    <section id="listen" class="py-24 px-6 md:px-20 border-b border-white/5">
+        <div class="max-w-7xl mx-auto">
+
+            <p class="text-xs uppercase tracking-[0.5em] text-teal-500 font-bold mb-2 text-center" data-reveal>Listen</p>
+            <p class="text-center text-gray-600 text-xs uppercase tracking-widest mb-14" data-reveal data-reveal-delay="100">Tracks &amp; Mixes</p>
+
+            <div class="grid md:grid-cols-2 gap-16">
+
+                <!-- ── TRACKS ── -->
+                <div data-reveal data-reveal-delay="100">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-1 h-10 rounded-full" style="width:4px;background:#14b8a6;flex-shrink:0;"></div>
+                        <h3 class="music-heading text-white">Tracks</h3>
+                    </div>
+                    <div class="listen-card listen-card-teal">
+                        <iframe
+                            width="100%"
+                            height="300"
+                            scrolling="no"
+                            frameborder="no"
+                            allow="autoplay"
+                            src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/s_m_i_t_hdj/sets/tracks&color=%2314b8a6&theme_color=%23000000&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false&inverse=true">
+                        </iframe>
+                    </div>
+                </div>
+
+                <!-- ── MIXES ── -->
+                <div data-reveal data-reveal-delay="200">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="rounded-full" style="width:4px;min-width:4px;height:40px;background:#f59e0b;flex-shrink:0;"></div>
+                        <h3 class="music-heading text-white">Mixes</h3>
+                    </div>
+                    <div class="listen-card listen-card-amber">
+                        <iframe
+                            width="100%"
+                            height="300"
+                            scrolling="no"
+                            frameborder="no"
+                            allow="autoplay"
+                            src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/s_m_i_t_hdj/sets/mixes&color=%23f59e0b&theme_color=%23000000&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false&inverse=true">
+                        </iframe>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- HERITAGE & PEDIGREE ────────────────────────────────────────────── -->
+    <section id="heritage" class="relative py-24 px-6 md:px-20 border-b border-white/5 overflow-hidden">
+
+        <!-- Cinematic video background -->
+        <video
+            autoplay muted loop playsinline
+            style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.4;filter:grayscale(0.8) brightness(0.7) contrast(1.2);z-index:-1;pointer-events:none;"
+        >
+            <source src="heritage-bg.mp4" type="video/mp4">
+        </video>
+        <!-- Radial vignette: fades hard edges to site background -->
+        <div style="position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at center, transparent 35%, #050505 90%);"></div>
+        <!-- Bottom gradient: smooth transition into next section -->
+        <div style="position:absolute;bottom:0;left:0;right:0;height:120px;z-index:0;pointer-events:none;background:linear-gradient(to bottom, transparent, #050505);"></div>
+
+        <!-- Content sits above video — glass-card blur boosted for legibility over video -->
+        <style>
+            #heritage .glass-card {
+                backdrop-filter: blur(15px);
+                -webkit-backdrop-filter: blur(15px);
+                background: rgba(5, 5, 5, 0.55);
+            }
+        </style>
+        <div class="relative z-10 max-w-7xl mx-auto">
+
+            <p class="text-xs uppercase tracking-[0.5em] text-teal-500 font-bold mb-2 text-center" data-reveal>Background &amp; Achievements</p>
+            <h2 class="text-4xl md:text-5xl font-black uppercase tracking-tight text-white text-center mb-16" style="font-variation-settings:'opsz' 32,'wght' 900;" data-reveal data-reveal-delay="100">Heritage &amp; Pedigree</h2>
+
+            <div class="grid md:grid-cols-2 gap-16 items-start">
+
+                <!-- ── LEFT: THE LEGACY ── -->
+                <div data-reveal data-reveal-delay="100">
+                    <h3 class="text-xs uppercase tracking-[0.4em] text-teal-500 font-bold mb-8">The Legacy</h3>
+
+                    <!-- DOMUS MUSIC -->
+                    <div class="relative pl-8 pb-10 border-l border-white/10">
+                        <div class="absolute -left-[5px] top-0 w-2.5 h-2.5 rounded-full bg-teal-500"></div>
+                        <span class="text-xs text-teal-400 font-bold uppercase tracking-widest">2018 – 2022</span>
+                        <h4 class="text-white font-black text-base mt-1 mb-2 uppercase tracking-tight" style="font-variation-settings:'opsz' 32,'wght' 900;">Domus Music</h4>
+                        <p class="text-gray-400 text-sm leading-relaxed">Founded and ran Domus Music, hosting stages at <span class="text-white">We Are FSTVL</span> with headline residencies at <span class="text-white">Lightbox London</span> and <span class="text-white">Eden Ibiza</span>. The label achieved <span class="text-white">multiple Beatport #1s</span> and consistent Top 5 releases throughout its run.</p>
+                    </div>
+
+                    <!-- LONDON SOUND ACADEMY -->
+                    <div class="relative pl-8 pb-10 border-l border-white/10">
+                        <div class="absolute -left-[5px] top-0 w-2.5 h-2.5 rounded-full bg-amber-400" style="box-shadow:0 0 8px rgba(245,158,11,0.6);"></div>
+                        <span class="text-xs text-amber-400 font-bold uppercase tracking-widest">Nearly a Decade</span>
+                        <div class="flex items-center flex-wrap gap-3 mt-1 mb-2">
+                            <h4 class="text-white font-black text-base uppercase tracking-tight" style="font-variation-settings:'opsz' 32,'wght' 900;">London Sound Academy</h4>
+                            <span class="text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded" style="background:rgba(245,158,11,0.15);color:#f59e0b;border:1px solid rgba(245,158,11,0.35);box-shadow:0 0 12px rgba(245,158,11,0.15);">Senior Tutor</span>
+                        </div>
+                        <p class="text-gray-400 text-sm leading-relaxed">Held <span class="text-white">Senior Tutor</span> status at LSA — one of the world's most respected DJ &amp; music production academies — spending nearly a decade mentoring future industry leaders across DJing and music production.</p>
+                    </div>
+
+                    <!-- BIG STAGES -->
+                    <div class="relative pl-8 border-l border-white/10">
+                        <div class="absolute -left-[5px] top-0 w-2.5 h-2.5 rounded-full bg-teal-500"></div>
+                        <span class="text-xs text-teal-400 font-bold uppercase tracking-widest">Marquee Stages</span>
+                        <h4 class="text-white font-black text-base mt-1 mb-4 uppercase tracking-tight" style="font-variation-settings:'opsz' 32,'wght' 900;">Key Performances</h4>
+                        <ul class="space-y-2">
+                            <li class="flex items-center gap-3 text-sm text-gray-300">
+                                <div class="w-1.5 h-1.5 bg-teal-500 rounded-full flex-shrink-0"></div>
+                                Ministry of Sound <span class="text-gray-500 text-xs ml-1">— Main Room</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-sm text-gray-300">
+                                <div class="w-1.5 h-1.5 bg-teal-500 rounded-full flex-shrink-0"></div>
+                                Studio 338 <span class="text-gray-500 text-xs ml-1">— Terrace</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-sm text-gray-300">
+                                <div class="w-1.5 h-1.5 bg-teal-500 rounded-full flex-shrink-0"></div>
+                                Egg London
+                            </li>
+                            <li class="flex items-center gap-3 text-sm text-gray-300">
+                                <div class="w-1.5 h-1.5 bg-teal-500 rounded-full flex-shrink-0"></div>
+                                Sankeys Ibiza
+                            </li>
+                            <li class="flex items-center gap-3 text-sm text-gray-300">
+                                <div class="w-1.5 h-1.5 bg-teal-500 rounded-full flex-shrink-0"></div>
+                                Eden Ibiza
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- ── RIGHT: CHART SUCCESS ── -->
+                <div data-reveal data-reveal-delay="200">
+                    <h3 class="text-xs uppercase tracking-[0.4em] text-teal-500 font-bold mb-8">Chart Success</h3>
+
+                    <div class="space-y-6">
+
+                        <!-- What More Can I Say EP -->
+                        <div class="glass-card rounded-xl p-6 relative overflow-hidden" style="box-shadow:0 0 35px rgba(20,184,166,0.12);">
+                            <div class="absolute top-0 left-0 right-0 h-px" style="background:linear-gradient(90deg,transparent,rgba(20,184,166,0.5),transparent);"></div>
+                            <div class="flex items-start justify-between gap-4">
+                                <div>
+                                    <span class="text-xs text-gray-500 uppercase tracking-widest font-bold">Current Alias</span>
+                                    <h4 class="text-white font-black text-lg mt-1 leading-tight" style="font-variation-settings:'opsz' 32,'wght' 900;">What More Can I Say EP</h4>
+                                    <p class="text-gray-400 text-xs mt-2">SMITH (UK)</p>
+                                </div>
+                                <span class="flex-shrink-0 bg-accent-amber text-black text-xs font-black uppercase px-3 py-1.5 tracking-wider">Beatport #1</span>
+                            </div>
+                            <div class="mt-4 flex items-center gap-2">
+                                <div class="w-1.5 h-1.5 bg-teal-500 rounded-full"></div>
+                                <p class="text-teal-400 text-xs font-medium">House / Organic House &amp; Downtempo</p>
+                            </div>
+                        </div>
+
+                        <!-- All I Need EP -->
+                        <div class="glass-card rounded-xl p-6 relative overflow-hidden" style="box-shadow:0 0 35px rgba(245,158,11,0.08);">
+                            <div class="absolute top-0 left-0 right-0 h-px" style="background:linear-gradient(90deg,transparent,rgba(245,158,11,0.4),transparent);"></div>
+                            <div class="flex items-start justify-between gap-4">
+                                <div>
+                                    <span class="text-xs text-gray-500 uppercase tracking-widest font-bold">Legacy Alias</span>
+                                    <h4 class="text-white font-black text-lg mt-1 leading-tight" style="font-variation-settings:'opsz' 32,'wght' 900;">All I Need EP</h4>
+                                    <p class="text-gray-400 text-xs mt-2">S.M.I.T.H</p>
+                                </div>
+                                <span class="flex-shrink-0 bg-accent-amber text-black text-xs font-black uppercase px-3 py-1.5 tracking-wider">Beatport #1</span>
+                            </div>
+                            <div class="mt-4 flex items-center gap-2">
+                                <div class="w-1.5 h-1.5 bg-amber-400 rounded-full"></div>
+                                <p class="text-amber-400 text-xs font-medium">House / Deep House</p>
+                            </div>
+                        </div>
+
+                        <!-- Stat callout row -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="glass-card rounded-lg p-5 text-center">
+                                <p class="text-3xl font-black text-white" style="font-variation-settings:'opsz' 32,'wght' 900;">16+</p>
+                                <p class="text-gray-500 text-xs uppercase tracking-widest mt-1">Years DJing<br><span class="text-gray-600">Since 2010</span></p>
+                            </div>
+                            <div class="glass-card rounded-lg p-5 text-center">
+                                <p class="text-3xl font-black text-white" style="font-variation-settings:'opsz' 32,'wght' 900;">15</p>
+                                <p class="text-gray-500 text-xs uppercase tracking-widest mt-1">Years Music<br>Production</p>
+                            </div>
+                        </div>
+                        <div class="glass-card rounded-lg p-5 text-center">
+                            <p class="text-3xl font-black text-teal-400" style="font-variation-settings:'opsz' 32,'wght' 900;">2×</p>
+                            <p class="text-gray-500 text-xs uppercase tracking-widest mt-1">Beatport Number Ones — Across Both Aliases</p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- LIVE / TOUR DATES ───────────────────────────────────────────────── -->
+    <!-- LIVE ────────────────────────────────────────────────────────────── -->
+    <section id="live" class="py-24 px-6 md:px-20 border-b border-white/5">
+        <div class="max-w-4xl mx-auto">
+
+            <p class="text-xs uppercase tracking-[0.5em] text-teal-500 font-bold mb-2 text-center" data-reveal>Tour Dates</p>
+            <h2 class="text-4xl md:text-5xl font-black uppercase tracking-tight text-white text-center mb-16"
+                style="font-variation-settings:'opsz' 32,'wght' 900;"
+                data-reveal data-reveal-delay="100">Live</h2>
+
+            <!-- Glassmorphism card wraps the Bandsintown widget -->
+            <div class="glass-card rounded-xl p-8 md:p-12" data-reveal data-reveal-delay="200"
+                 style="min-height:180px;">
+
+                <!-- Widget script must load before the initialiser anchor -->
+                <script charset="utf-8" src="https://widget.bandsintown.com/main.min.js"></script>
+
+                <a class="bit-widget-initializer"
+                   data-artist-name="id_15640241"
+                   data-display-past-dates="true"
+                   data-text-color="#ffffff"
+                   data-link-color="#14b8a6"
+                   data-background-color="rgba(0,0,0,0)"
+                   data-display-limit="10"
+                   data-separator-color="rgba(255,255,255,0.08)"
+                   data-font-color="#ffffff"></a>
+
+            </div><!-- /glass-card -->
+        </div>
+    </section>
+
+    <!-- VIBE — EDITORIAL FILM STRIP ────────────────────────────────────── -->
+    <section id="vibe" class="py-24 border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 md:px-20">
+
+            <p class="text-xs uppercase tracking-[0.5em] text-teal-500 font-bold mb-2 text-center" data-reveal>Photos &amp; Clips</p>
+            <h2 class="text-4xl md:text-5xl font-black uppercase tracking-tight text-white text-center mb-4"
+                style="font-variation-settings:'opsz' 32,'wght' 900;"
+                data-reveal data-reveal-delay="100">Vibe</h2>
+            <p class="text-center text-gray-600 text-xs uppercase tracking-[0.3em] mb-8" data-reveal data-reveal-delay="200">Drag or scroll to explore</p>
+
+            <!-- Film strip card -->
+            <div class="vibe-strip-card" data-reveal data-reveal-delay="300">
+                <div class="vibe-strip" id="vibe-strip">
+
+                    <!-- 1 · FEATURED — hero opener, 600px wide, cover-fill -->
+                    <div class="vibe-item vibe-featured" data-type="image" data-src="assets/images/vibe-9.jpg">
+                        <img src="assets/images/vibe-9.jpg" alt="Vibe" loading="lazy">
+                    </div>
+
+                    <!-- 2 · Image -->
+                    <div class="vibe-item" data-type="image" data-src="assets/images/vibe-1.jpg">
+                        <img src="assets/images/vibe-1.jpg" alt="Vibe" loading="lazy">
+                    </div>
+
+                    <!-- 3 · Image -->
+                    <div class="vibe-item" data-type="image" data-src="assets/images/vibe-2.jpg">
+                        <img src="assets/images/vibe-2.jpg" alt="Vibe" loading="lazy">
+                    </div>
+
+                    <!-- 4 · Video -->
+                    <div class="vibe-item" data-type="video" data-src="assets/videos/vibe-vid-2.mp4">
+                        <video muted loop playsinline preload="none">
+                            <source src="assets/videos/vibe-vid-2.mp4" type="video/mp4">
+                        </video>
+                        <div class="vibe-play-badge">
+                            <svg width="9" height="11" viewBox="0 0 9 11" fill="white"><path d="M0 0L9 5.5L0 11Z"/></svg>
+                        </div>
+                    </div>
+
+                    <!-- 5 · Image -->
+                    <div class="vibe-item" data-type="image" data-src="assets/images/vibe-3.jpg">
+                        <img src="assets/images/vibe-3.jpg" alt="Vibe" loading="lazy">
+                    </div>
+
+                    <!-- 6 · Image -->
+                    <div class="vibe-item" data-type="image" data-src="assets/images/vibe-5.jpg">
+                        <img src="assets/images/vibe-5.jpg" alt="Vibe" loading="lazy">
+                    </div>
+
+                    <!-- 7 · Image -->
+                    <div class="vibe-item" data-type="image" data-src="assets/images/vibe-6.jpg">
+                        <img src="assets/images/vibe-6.jpg" alt="Vibe" loading="lazy">
+                    </div>
+
+                    <!-- 8 · Video -->
+                    <div class="vibe-item" data-type="video" data-src="assets/videos/vibe-vid-6.mp4">
+                        <video muted loop playsinline preload="none">
+                            <source src="assets/videos/vibe-vid-6.mp4" type="video/mp4">
+                        </video>
+                        <div class="vibe-play-badge">
+                            <svg width="9" height="11" viewBox="0 0 9 11" fill="white"><path d="M0 0L9 5.5L0 11Z"/></svg>
+                        </div>
+                    </div>
+
+                    <!-- 9 · Image — zoom fill (object-fit cover + scale 1.3) -->
+                    <div class="vibe-item vibe-zoom" data-type="image" data-src="assets/images/vibe-7.jpg">
+                        <img src="assets/images/vibe-7.jpg" alt="Vibe" loading="lazy">
+                    </div>
+
+                    <!-- 10 · Image -->
+                    <div class="vibe-item" data-type="image" data-src="assets/images/vibe-8.jpg">
+                        <img src="assets/images/vibe-8.jpg" alt="Vibe" loading="lazy">
+                    </div>
+
+                    <!-- 11 · Video — standard, no zoom -->
+                    <div class="vibe-item" data-type="video" data-src="assets/videos/vibe-vid-7.mp4">
+                        <video muted loop playsinline preload="none">
+                            <source src="assets/videos/vibe-vid-7.mp4" type="video/mp4">
+                        </video>
+                        <div class="vibe-play-badge">
+                            <svg width="9" height="11" viewBox="0 0 9 11" fill="white"><path d="M0 0L9 5.5L0 11Z"/></svg>
+                        </div>
+                    </div>
+
+                </div><!-- /vibe-strip -->
+            </div><!-- /vibe-strip-card -->
+
+        </div>
+    </section>
+
+    <!-- LIGHTBOX OVERLAY (shared, outside section flow) ─────────────────── -->
+    <div id="vibe-lb" role="dialog" aria-modal="true" aria-label="Media viewer">
+        <button class="vibe-lb-ui" id="vibe-lb-close" aria-label="Close">&#x2715;</button>
+        <button class="vibe-lb-ui" id="vibe-lb-prev"  aria-label="Previous">&#x2190;</button>
+        <div id="vibe-lb-media"></div>
+        <button class="vibe-lb-ui" id="vibe-lb-next"  aria-label="Next">&#x2192;</button>
+        <div id="vibe-lb-counter"></div>
+    </div>
+
+    <!-- SERVICES ───────────────────────────────────────────────────────── -->
+    <section id="services" class="py-24 px-6 md:px-20 bg-[#0a0a0a] border-y border-white/5">
+        <div class="max-w-7xl mx-auto">
+
+            <p class="text-xs uppercase tracking-[0.5em] text-teal-500 font-bold mb-2 text-center" data-reveal>What I Offer</p>
+            <h2 class="text-4xl md:text-5xl font-black uppercase tracking-tight text-white text-center mb-16" style="font-variation-settings:'opsz' 32,'wght' 900;" data-reveal data-reveal-delay="100">Services</h2>
+
+            <div class="grid md:grid-cols-3 gap-8">
+
+                <!-- ── MIXING & MASTERING ── -->
+                <div class="service-card service-card-teal" data-reveal data-reveal-delay="100">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div style="width:3px;height:36px;background:#14b8a6;border-radius:9999px;flex-shrink:0;"></div>
+                        <h3 class="service-heading text-white">Mixing &amp;<br>Mastering</h3>
+                    </div>
+
+                    <div class="space-y-0 flex-1">
+                        <div class="service-tier">
+                            <p class="text-white text-sm font-bold mb-1">Full Track Mixdown</p>
+                            <p class="text-gray-500 text-xs leading-relaxed">Unlimited layers · 3 revisions included</p>
+                        </div>
+                        <div class="service-tier">
+                            <p class="text-white text-sm font-bold mb-1">Stem Mixdown</p>
+                            <p class="text-gray-500 text-xs leading-relaxed">Up to 15 stems · 2 revisions included</p>
+                        </div>
+                        <div class="service-tier">
+                            <p class="text-white text-sm font-bold mb-1">Final Track Master</p>
+                            <p class="text-gray-500 text-xs leading-relaxed">Single track · 2 revisions included</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-5 border-t border-white/6 space-y-3">
+                        <p class="text-xs text-teal-400 font-bold uppercase tracking-wide">Deal</p>
+                        <p class="text-gray-400 text-xs leading-relaxed">Add a Final Master to any mixdown package for <span class="text-white font-bold">50% off</span>.</p>
+                        <p class="text-xs text-amber-400 leading-relaxed font-medium">★ Free listen &amp; feedback service included with every package before work begins.</p>
+                    </div>
+                </div>
+
+                <!-- ── CORPORATE ── -->
+                <div class="service-card service-card-amber" data-reveal data-reveal-delay="200">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div style="width:3px;height:36px;background:#f59e0b;border-radius:9999px;flex-shrink:0;"></div>
+                        <h3 class="service-heading text-white">Corporate</h3>
+                    </div>
+
+                    <div class="flex-1">
+                        <p class="text-white text-sm font-bold mb-2">Team Building Days</p>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">Bespoke corporate experiences centred on <span class="text-white">Music Production</span> or <span class="text-white">DJing</span> — designed to inspire creativity, collaboration, and a shared love of music.</p>
+                        <div class="flex items-start gap-3 bg-white/3 rounded-lg p-4 border border-white/6">
+                            <div class="w-1.5 h-1.5 bg-amber-400 rounded-full mt-1.5 flex-shrink-0"></div>
+                            <p class="text-gray-300 text-xs leading-relaxed">Trusted by global brands including <span class="text-white font-bold">Logitech</span>.</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-5 border-t border-white/6">
+                        <a href="#contact" class="inline-block text-xs text-amber-400 font-bold uppercase tracking-widest hover:text-amber-300 transition duration-300">Enquire →</a>
+                    </div>
+                </div>
+
+                <!-- ── TEACHING ── -->
+                <div class="service-card service-card-teal" data-reveal data-reveal-delay="300">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div style="width:3px;height:36px;background:#14b8a6;border-radius:9999px;flex-shrink:0;"></div>
+                        <h3 class="service-heading text-white">Teaching</h3>
+                    </div>
+
+                    <div class="flex-1">
+                        <p class="text-white text-sm font-bold mb-2">1-to-1 Tailored Tutoring</p>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">Personalised sessions for <span class="text-white">DJing</span> and <span class="text-white">Music Production</span>, structured around your goals — whether you're starting out or refining your craft.</p>
+                        <ul class="space-y-2">
+                            <li class="flex items-center gap-2 text-gray-400 text-xs">
+                                <div class="w-1.5 h-1.5 bg-teal-500 rounded-full flex-shrink-0"></div>
+                                All skill levels welcome
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-400 text-xs">
+                                <div class="w-1.5 h-1.5 bg-teal-500 rounded-full flex-shrink-0"></div>
+                                In-person &amp; remote available
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-400 text-xs">
+                                <div class="w-1.5 h-1.5 bg-teal-500 rounded-full flex-shrink-0"></div>
+                                Sessions tailored to your DAW &amp; setup
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-6 pt-5 border-t border-white/6">
+                        <a href="#contact" class="inline-block text-xs text-teal-400 font-bold uppercase tracking-widest hover:text-teal-300 transition duration-300">Book a Session →</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT / BOOKING ───────────────────────────────────────────────── -->
+    <section id="contact" class="py-24 px-6 md:px-20">
+        <div class="max-w-2xl mx-auto">
+
+            <p class="text-xs uppercase tracking-[0.5em] text-teal-500 font-bold mb-2 text-center" data-reveal>Get In Touch</p>
+            <h2 class="text-4xl md:text-5xl font-black uppercase tracking-tight text-white text-center mb-4" style="font-variation-settings:'opsz' 32,'wght' 900;" data-reveal data-reveal-delay="100">Booking</h2>
+            <p class="text-center text-gray-500 text-sm mb-12" data-reveal data-reveal-delay="200">DJ bookings, studio work, corporate events, or teaching enquiries — fill in the form and I'll be in touch.</p>
+
+            <form
+                action="https://formspree.io/f/mnjonpyj"
+                method="POST"
+                class="glass-card rounded-xl p-8 md:p-10 space-y-6"
+                data-reveal data-reveal-delay="200"
+            >
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs uppercase tracking-widest text-gray-400 font-bold mb-2">Name</label>
+                        <input type="text" name="name" placeholder="Your name" required class="form-input">
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-widest text-gray-400 font-bold mb-2">Email</label>
+                        <input type="email" name="email" placeholder="your@email.com" required class="form-input">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs uppercase tracking-widest text-gray-400 font-bold mb-2">Service Interest</label>
+                    <select name="service" required class="form-input">
+                        <option value="" disabled selected>Select a service…</option>
+                        <option value="Mixing & Mastering">Mixing &amp; Mastering</option>
+                        <option value="Corporate">Corporate Event</option>
+                        <option value="Teaching">Teaching / Tutoring</option>
+                        <option value="DJ Booking">DJ Booking</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs uppercase tracking-widest text-gray-400 font-bold mb-2">Message</label>
+                    <textarea name="message" rows="5" placeholder="Tell me about your project, event, or question…" required class="form-input" style="resize:vertical;min-height:120px;"></textarea>
+                </div>
+
+                <button
+                    type="submit"
+                    class="w-full bg-white text-black font-black uppercase tracking-widest text-sm py-4 px-10 hover:bg-teal-500 hover:text-white transition duration-300"
+                    style="font-variation-settings:'opsz' 32,'wght' 900;"
+                >
+                    Send Message
+                </button>
+            </form>
+
+        </div>
+    </section>
+
+    <!-- SUPPORT GRID ────────────────────────────────────────────────────── -->
+    <section class="py-24 px-6 md:px-20 max-w-5xl mx-auto text-center">
+        <h4 class="text-gray-500 uppercase tracking-widest text-xs mb-10 font-bold" data-reveal>Supported By</h4>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 opacity-70">
+            <div class="py-4 border border-white/5 hover:border-teal-500/50 transition duration-300" data-reveal data-reveal-delay="100">Michael Bibi</div>
+            <div class="py-4 border border-white/5 hover:border-teal-500/50 transition duration-300" data-reveal data-reveal-delay="200">Prunk</div>
+            <div class="py-4 border border-white/5 hover:border-teal-500/50 transition duration-300" data-reveal data-reveal-delay="300">Chris Stussy</div>
+            <div class="py-4 border border-white/5 hover:border-teal-500/50 transition duration-300" data-reveal data-reveal-delay="400">George Smeddles</div>
+            <div class="py-4 border border-white/5 hover:border-teal-500/50 transition duration-300" data-reveal data-reveal-delay="100">Sam Divine</div>
+            <div class="py-4 border border-white/5 hover:border-teal-500/50 transition duration-300" data-reveal data-reveal-delay="200">RUZE</div>
+            <div class="py-4 border border-white/5 hover:border-teal-500/50 transition duration-300" data-reveal data-reveal-delay="300">Alisha</div>
+            <div class="py-4 border border-white/5 hover:border-teal-500/50 transition duration-300" data-reveal data-reveal-delay="400">London Sound Academy</div>
+        </div>
+    </section>
+
+    <!-- RIDER / TECH SPECS ──────────────────────────────────────────────── -->
+    <section id="rider" class="py-24 px-6 md:px-20 bg-black">
+        <div class="max-w-4xl mx-auto glass-card p-8 md:p-16 rounded-lg" data-reveal>
+            <div class="flex justify-between items-start mb-12">
+                <div>
+                    <h3 class="text-3xl font-bold mb-2">Technical Rider</h3>
+                    <p class="text-teal-400 text-sm font-mono">Ver. 2025.1</p>
+                </div>
+                <img src="logo.png" alt="Logo" loading="lazy" class="h-6 opacity-50 brightness-0 invert">
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12">
+                <div>
+                    <h5 class="text-accent-amber uppercase text-xs font-black tracking-widest mb-4">Booth Setup</h5>
+                    <ul class="space-y-3 text-gray-300 font-light">
+                        <li class="flex justify-between border-b border-white/5 pb-2"><span>1x Pioneer DJM-A9</span></li>
+                        <li class="flex justify-between border-b border-white/5 pb-2"><span>2x CDJ-3000</span></li>
+                        <li class="flex justify-between border-b border-white/5 pb-2"><span>2x Technics 1210 MK2</span></li>
+                        <li class="flex justify-between border-b border-white/5 pb-2"><span>1x DJS-1000</span></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-accent-amber uppercase text-xs font-black tracking-widest mb-4">Hospitality</h5>
+                    <ul class="space-y-3 text-gray-300 font-light">
+                        <li class="flex items-center space-x-2">
+                            <div class="w-1.5 h-1.5 bg-teal-500"></div>
+                            <span>Still Water (Room Temp)</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <div class="w-1.5 h-1.5 bg-teal-500"></div>
+                            <span>Chilled Ginger Beer</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER ─────────────────────────────────────────────────────────── -->
+    <footer class="footer-minimal">
+        <p>© 2026 Smith (UK) | All Rights Reserved</p>
+        <a href="#" aria-label="Back to top">Back to Top ↑</a>
+    </footer>
+
+    <!-- FLOATING SOCIAL DOCK — "Blade" ──────────────────────────────────── -->
+    <nav id="social-dock" aria-label="Social media links">
+        <div class="dock-blade">
+            <a href="https://www.instagram.com/smith___uk/" class="dock-icon" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <img src="assets/icons/instagram.svg" alt="Instagram">
+            </a>
+            <a href="https://soundcloud.com/s_m_i_t_hdj" class="dock-icon" target="_blank" rel="noopener noreferrer" aria-label="SoundCloud">
+                <img src="assets/icons/soundcloud.svg" alt="SoundCloud">
+            </a>
+            <a href="https://www.beatport.com/artist/smith-uk/1507983" class="dock-icon" target="_blank" rel="noopener noreferrer" aria-label="Beatport">
+                <img src="assets/icons/beatport.svg" alt="Beatport">
+            </a>
+            <a href="https://www.youtube.com/@SMITH-UK" class="dock-icon" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                <img src="assets/icons/youtube.svg" alt="YouTube">
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        // ── Vibe Film Strip — drag-scroll, hover-play & lightbox ─────────
+        (function () {
+            const items   = Array.from(document.querySelectorAll('.vibe-item'));
+            const strip   = document.getElementById('vibe-strip');
+            const lb      = document.getElementById('vibe-lb');
+            const lbMedia = document.getElementById('vibe-lb-media');
+            const lbClose = document.getElementById('vibe-lb-close');
+            const lbPrev  = document.getElementById('vibe-lb-prev');
+            const lbNext  = document.getElementById('vibe-lb-next');
+            const lbCount = document.getElementById('vibe-lb-counter');
+            if (!lb) return;
+            let cur = 0, didDrag = false;
+
+            // Video tiles: play on hover, pause + reset on mouse-out
+            items.forEach(item => {
+                if (item.dataset.type !== 'video') return;
+                const vid = item.querySelector('video');
+                if (!vid) return;
+                item.addEventListener('mouseenter', () => vid.play());
+                item.addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
+            });
+
+            // Section cursor-glow — teal shimmer follows mouse inside #vibe
+            const vibeSection = document.getElementById('vibe');
+            if (vibeSection) {
+                vibeSection.addEventListener('mousemove', e => {
+                    const r = vibeSection.getBoundingClientRect();
+                    vibeSection.style.setProperty('--vibe-glow-x', (e.clientX - r.left) + 'px');
+                    vibeSection.style.setProperty('--vibe-glow-y', (e.clientY - r.top)  + 'px');
+                    vibeSection.classList.add('vibe-glow-on');
+                });
+                vibeSection.addEventListener('mouseleave', () => {
+                    vibeSection.classList.remove('vibe-glow-on');
+                });
+            }
+
+            // Drag-to-scroll (mouse only — touch handled natively)
+            if (strip) {
+                let isDown = false, startX = 0, scrollLeft = 0;
+                strip.addEventListener('mousedown', e => {
+                    isDown = true; didDrag = false;
+                    startX = e.pageX - strip.offsetLeft;
+                    scrollLeft = strip.scrollLeft;
+                    strip.style.cursor = 'grabbing';
+                });
+                const endDrag = () => { isDown = false; strip.style.cursor = 'grab'; };
+                strip.addEventListener('mouseup', endDrag);
+                strip.addEventListener('mouseleave', endDrag);
+                strip.addEventListener('mousemove', e => {
+                    if (!isDown) return;
+                    const walk = e.pageX - strip.offsetLeft - startX;
+                    if (Math.abs(walk) > 5) didDrag = true;
+                    strip.scrollLeft = scrollLeft - walk * 1.4;
+                });
+            }
+
+            // Lightbox — handles both images and videos
+            function open(idx) {
+                cur = (idx + items.length) % items.length;
+                const item = items[cur];
+                lbMedia.innerHTML = '';
+                const baseStyle = 'max-width:min(90vw,1100px);max-height:88vh;border-radius:6px;border:1px solid rgba(255,255,255,0.10);';
+                if (item.dataset.type === 'video') {
+                    const v = document.createElement('video');
+                    v.src = item.dataset.src;
+                    v.controls = true; v.autoplay = true; v.muted = false;
+                    v.style.cssText = baseStyle;
+                    lbMedia.appendChild(v);
+                } else {
+                    const img = document.createElement('img');
+                    img.src = item.dataset.src;
+                    img.alt = 'Vibe';
+                    img.style.cssText = baseStyle + 'object-fit:contain;';
+                    lbMedia.appendChild(img);
+                }
+                lbCount.textContent = (cur + 1) + ' / ' + items.length;
+                lb.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function close() {
+                const v = lbMedia.querySelector('video');
+                if (v) v.pause();
+                lb.classList.remove('open');
+                lbMedia.innerHTML = '';
+                document.body.style.overflow = '';
+            }
+
+            items.forEach((item, i) => item.addEventListener('click', () => { if (!didDrag) open(i); }));
+            lbClose.addEventListener('click', close);
+            lbPrev.addEventListener('click',  () => open(cur - 1));
+            lbNext.addEventListener('click',  () => open(cur + 1));
+            lb.addEventListener('click', e => { if (e.target === lb) close(); });
+            document.addEventListener('keydown', e => {
+                if (!lb.classList.contains('open')) return;
+                if (e.key === 'Escape')     close();
+                if (e.key === 'ArrowLeft')  open(cur - 1);
+                if (e.key === 'ArrowRight') open(cur + 1);
+            });
+        })();
+
+        // ── Scroll Reveal ─────────────────────────────────────────────────
+        (function () {
+            const els = document.querySelectorAll('[data-reveal]');
+            if (!els.length) return;
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12 });
+            els.forEach(el => observer.observe(el));
+        })();
+
+        // ── Social Dock — fade in after user scrolls past hero ────────────
+        (function () {
+            const dock   = document.getElementById('social-dock');
+            const heroEl = document.querySelector('section'); // first section = hero
+            if (!dock) return;
+
+            function checkDock() {
+                // Show dock once user has scrolled past 50% of the hero height (or 300px)
+                const threshold = heroEl ? heroEl.offsetHeight * 0.5 : 300;
+                dock.classList.toggle('dock-visible', window.scrollY > threshold);
+            }
+
+            window.addEventListener('scroll', checkDock, { passive: true });
+            checkDock(); // run once on load (hidden at top)
+        })();
+    </script>
+
+</body>
+</html>
