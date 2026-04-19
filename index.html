@@ -50,6 +50,56 @@
             );
             pointer-events: none;
         }
+        .menu-toggle {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            width: 44px;
+            height: 44px;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: white;
+        }
+        .menu-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            margin-left: auto;
+            background: currentColor;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+        }
+        .nav-links {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            padding: 1.25rem 1.5rem 1.5rem;
+            background: rgba(0, 0, 0, 0.82);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .nav-link-item {
+            padding: 0.9rem 0;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+        }
+        .menu-toggle[aria-expanded="true"] span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+        .menu-toggle[aria-expanded="true"] span:nth-child(2) {
+            opacity: 0;
+        }
+        .menu-toggle[aria-expanded="true"] span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
 
         /* ── Hero Title — original scale, wide-spaced Inter 900 ────────────── */
         .hero-title {
@@ -558,13 +608,28 @@
             color: #2dd4bf;           /* teal-400 */
             filter: drop-shadow(0 0 15px rgba(20, 184, 166, 0.4));
         }
-        @media (max-width: 767px) {
+        @media (max-width: 768px) {
             .ticker-item {
                 font-size: 0.85rem;
                 padding: 0 2.5rem;
                 letter-spacing: 0.25em;
             }
             .ticker-item::after { padding-left: 2.5rem; }
+            .nav-glass {
+                position: fixed;
+                flex-wrap: wrap;
+                align-items: center;
+            }
+            .menu-toggle {
+                display: flex;
+            }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+            }
+            .nav-glass.active .nav-links {
+                display: flex;
+            }
             /* extra bottom clearance on contact so the dock never sits over Send */
             #contact { padding-bottom: 8rem; }
         }
@@ -614,6 +679,28 @@
             <a href="#services"  class="hover:text-teal-400 transition duration-300">Services</a>
             <a href="#rider"     class="hover:text-teal-400 transition duration-300">Rider</a>
             <a href="#contact"   class="accent-amber hover:text-amber-300 transition duration-300">Booking</a>
+        </div>
+        <button
+            type="button"
+            id="mobile-menu-toggle"
+            class="menu-toggle md:hidden"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+            aria-label="Toggle navigation menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div id="mobile-menu" class="nav-links md:hidden" hidden>
+            <a href="#bio"      class="nav-link-item hover:text-teal-400 transition duration-300">Bio</a>
+            <a href="#music"    class="nav-link-item hover:text-teal-400 transition duration-300">Music</a>
+            <a href="#listen"   class="nav-link-item hover:text-teal-400 transition duration-300">Listen Now</a>
+            <a href="#heritage" class="nav-link-item hover:text-teal-400 transition duration-300">Heritage</a>
+            <a href="#live"     class="nav-link-item hover:text-teal-400 transition duration-300">Live</a>
+            <a href="#vibe"     class="nav-link-item hover:text-teal-400 transition duration-300">Vibe</a>
+            <a href="#services" class="nav-link-item hover:text-teal-400 transition duration-300">Services</a>
+            <a href="#rider"    class="nav-link-item hover:text-teal-400 transition duration-300">Rider</a>
+            <a href="#contact"  class="nav-link-item accent-amber hover:text-amber-300 transition duration-300">Booking</a>
         </div>
     </nav>
 
@@ -766,10 +853,10 @@
 
         <!-- Cinematic video background -->
         <video
-            autoplay muted loop playsinline
+            autoplay muted loop playsinline preload="metadata"
             style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.4;filter:grayscale(0.8) brightness(0.7) contrast(1.2);z-index:-1;pointer-events:none;"
         >
-            <source src="heritage-bg.mp4" type="video/mp4">
+            <source src="heritage-bg.mp4#t=0.1" type="video/mp4">
         </video>
         <!-- Radial vignette: fades hard edges to site background -->
         <div style="position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at center, transparent 35%, #050505 90%);"></div>
@@ -969,8 +1056,8 @@
 
                     <!-- 4 · Video -->
                     <div class="vibe-item" data-type="video" data-src="assets/videos/vibe-vid-2.mp4">
-                        <video muted loop playsinline preload="none">
-                            <source src="assets/videos/vibe-vid-2.mp4" type="video/mp4">
+                        <video muted loop playsinline preload="metadata">
+                            <source src="assets/videos/vibe-vid-2.mp4#t=0.1" type="video/mp4">
                         </video>
                         <div class="vibe-play-badge">
                             <svg width="9" height="11" viewBox="0 0 9 11" fill="white"><path d="M0 0L9 5.5L0 11Z"/></svg>
@@ -994,8 +1081,8 @@
 
                     <!-- 8 · Video -->
                     <div class="vibe-item" data-type="video" data-src="assets/videos/vibe-vid-6.mp4">
-                        <video muted loop playsinline preload="none">
-                            <source src="assets/videos/vibe-vid-6.mp4" type="video/mp4">
+                        <video muted loop playsinline preload="metadata">
+                            <source src="assets/videos/vibe-vid-6.mp4#t=0.1" type="video/mp4">
                         </video>
                         <div class="vibe-play-badge">
                             <svg width="9" height="11" viewBox="0 0 9 11" fill="white"><path d="M0 0L9 5.5L0 11Z"/></svg>
@@ -1014,8 +1101,8 @@
 
                     <!-- 11 · Video — standard, no zoom -->
                     <div class="vibe-item" data-type="video" data-src="assets/videos/vibe-vid-7.mp4">
-                        <video muted loop playsinline preload="none">
-                            <source src="assets/videos/vibe-vid-7.mp4" type="video/mp4">
+                        <video muted loop playsinline preload="metadata">
+                            <source src="assets/videos/vibe-vid-7.mp4#t=0.1" type="video/mp4">
                         </video>
                         <div class="vibe-play-badge">
                             <svg width="9" height="11" viewBox="0 0 9 11" fill="white"><path d="M0 0L9 5.5L0 11Z"/></svg>
@@ -1393,6 +1480,33 @@
 
             window.addEventListener('scroll', checkDock, { passive: true });
             checkDock(); // run once on load (hidden at top)
+        })();
+
+        // ── Mobile Navigation ─────────────────────────────────────────────
+        (function () {
+            const nav = document.querySelector('.nav-glass');
+            const toggle = document.getElementById('mobile-menu-toggle');
+            const menu = document.getElementById('mobile-menu');
+            if (!nav || !toggle || !menu) return;
+
+            function setOpen(isOpen) {
+                toggle.setAttribute('aria-expanded', String(isOpen));
+                menu.hidden = !isOpen;
+                nav.classList.toggle('active', isOpen);
+            }
+
+            toggle.addEventListener('click', () => {
+                const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+                setOpen(!isOpen);
+            });
+
+            menu.querySelectorAll('a').forEach((link) => {
+                link.addEventListener('click', () => setOpen(false));
+            });
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) setOpen(false);
+            });
         })();
     </script>
 
