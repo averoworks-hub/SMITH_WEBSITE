@@ -342,6 +342,34 @@
             filter: grayscale(0) brightness(1);
             transform: scale(1.04);
         }
+        .vibe-item[data-type="video"] {
+            background:
+                linear-gradient(135deg, rgba(20, 184, 166, 0.12), rgba(255, 255, 255, 0.03)),
+                rgba(10, 10, 10, 0.92);
+        }
+        .vibe-item[data-type="video"]::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.08) 45%,
+                transparent 100%
+            );
+            transform: translateX(-100%);
+            animation: vibe-video-sheen 2.2s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .vibe-item[data-type="video"] video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: relative;
+            z-index: 0;
+            background: transparent;
+        }
 
         /* Featured hero item — fixed 600px wide, fills container */
         .vibe-item.vibe-featured { width: 600px; }
@@ -361,6 +389,12 @@
         }
         .vibe-item.vibe-zoom:hover img { transform: scale(1.34); }
 
+        @keyframes vibe-video-sheen {
+            0%   { transform: translateX(-100%); opacity: 0.35; }
+            55%  { transform: translateX(100%); opacity: 0.55; }
+            100% { transform: translateX(100%); opacity: 0.2; }
+        }
+
         .vibe-play-badge {
             position: absolute;
             bottom: 10px; right: 10px;
@@ -377,6 +411,39 @@
             .vibe-strip { height: 260px; gap: 12px; padding: 10px 14px; }
             .vibe-item.vibe-featured { width: 340px; }
             .vibe-item.vibe-zoom     { width: 300px; }
+            .vibe-item[data-type="video"] {
+                height: 100%;
+                aspect-ratio: 9 / 16;
+                width: auto;
+                min-width: 146px;
+                background:
+                    linear-gradient(180deg, rgba(20, 184, 166, 0.14), rgba(8, 8, 8, 0.92)),
+                    rgba(12, 12, 12, 0.96);
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+            }
+            .vibe-item[data-type="video"] video {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            #heritage {
+                background:
+                    radial-gradient(circle at center, rgba(255, 255, 255, 0.05), transparent 58%),
+                    linear-gradient(180deg, #171717 0%, #0a0a0a 100%);
+            }
+            #heritage video[data-deferred-video] {
+                background: transparent;
+            }
+            #heritage::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                z-index: -2;
+                pointer-events: none;
+                background:
+                    radial-gradient(circle at 30% 30%, rgba(20, 184, 166, 0.10), transparent 38%),
+                    linear-gradient(180deg, rgba(34, 34, 34, 0.95), rgba(12, 12, 12, 0.98));
+            }
         }
 
         /* ── Social Dock — Blade (local SVG icons, fit-content) ────────────── */
@@ -853,10 +920,10 @@
 
         <!-- Cinematic video background -->
         <video
-            autoplay muted loop playsinline preload="metadata"
+            autoplay muted loop playsinline preload="none" loading="lazy" data-deferred-video
             style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.4;filter:grayscale(0.8) brightness(0.7) contrast(1.2);z-index:-1;pointer-events:none;"
         >
-            <source src="heritage-bg.mp4#t=0.1" type="video/mp4">
+            <source data-src="heritage-bg.mp4#t=0.1" type="video/mp4">
         </video>
         <!-- Radial vignette: fades hard edges to site background -->
         <div style="position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at center, transparent 35%, #050505 90%);"></div>
@@ -1056,8 +1123,8 @@
 
                     <!-- 4 · Video -->
                     <div class="vibe-item" data-type="video" data-src="assets/videos/vibe-vid-2.mp4">
-                        <video muted loop playsinline preload="metadata">
-                            <source src="assets/videos/vibe-vid-2.mp4#t=0.1" type="video/mp4">
+                        <video muted loop playsinline preload="none" loading="lazy" data-deferred-video>
+                            <source data-src="assets/videos/vibe-vid-2.mp4#t=0.1" type="video/mp4">
                         </video>
                         <div class="vibe-play-badge">
                             <svg width="9" height="11" viewBox="0 0 9 11" fill="white"><path d="M0 0L9 5.5L0 11Z"/></svg>
@@ -1081,8 +1148,8 @@
 
                     <!-- 8 · Video -->
                     <div class="vibe-item" data-type="video" data-src="assets/videos/vibe-vid-6.mp4">
-                        <video muted loop playsinline preload="metadata">
-                            <source src="assets/videos/vibe-vid-6.mp4#t=0.1" type="video/mp4">
+                        <video muted loop playsinline preload="none" loading="lazy" data-deferred-video>
+                            <source data-src="assets/videos/vibe-vid-6.mp4#t=0.1" type="video/mp4">
                         </video>
                         <div class="vibe-play-badge">
                             <svg width="9" height="11" viewBox="0 0 9 11" fill="white"><path d="M0 0L9 5.5L0 11Z"/></svg>
@@ -1101,8 +1168,8 @@
 
                     <!-- 11 · Video — standard, no zoom -->
                     <div class="vibe-item" data-type="video" data-src="assets/videos/vibe-vid-7.mp4">
-                        <video muted loop playsinline preload="metadata">
-                            <source src="assets/videos/vibe-vid-7.mp4#t=0.1" type="video/mp4">
+                        <video muted loop playsinline preload="none" loading="lazy" data-deferred-video>
+                            <source data-src="assets/videos/vibe-vid-7.mp4#t=0.1" type="video/mp4">
                         </video>
                         <div class="vibe-play-badge">
                             <svg width="9" height="11" viewBox="0 0 9 11" fill="white"><path d="M0 0L9 5.5L0 11Z"/></svg>
@@ -1360,15 +1427,50 @@
             const lbPrev  = document.getElementById('vibe-lb-prev');
             const lbNext  = document.getElementById('vibe-lb-next');
             const lbCount = document.getElementById('vibe-lb-counter');
+            const deferredVideos = Array.from(document.querySelectorAll('video[data-deferred-video]'));
             if (!lb) return;
             let cur = 0, didDrag = false;
+
+            function ensureVideoLoaded(video) {
+                if (!video || video.dataset.loaded === 'true') return;
+                const source = video.querySelector('source[data-src]');
+                if (!source) {
+                    video.dataset.loaded = 'true';
+                    return;
+                }
+                source.src = source.dataset.src;
+                source.removeAttribute('data-src');
+                video.load();
+                video.dataset.loaded = 'true';
+            }
+
+            if (deferredVideos.length) {
+                if ('IntersectionObserver' in window) {
+                    const videoObserver = new IntersectionObserver((entries, observer) => {
+                        entries.forEach((entry) => {
+                            if (!entry.isIntersecting) return;
+                            ensureVideoLoaded(entry.target);
+                            observer.unobserve(entry.target);
+                        });
+                    }, {
+                        rootMargin: '300px 0px',
+                        threshold: 0.01
+                    });
+                    deferredVideos.forEach(video => videoObserver.observe(video));
+                } else {
+                    deferredVideos.forEach(ensureVideoLoaded);
+                }
+            }
 
             // Video tiles: play on hover, pause + reset on mouse-out
             items.forEach(item => {
                 if (item.dataset.type !== 'video') return;
                 const vid = item.querySelector('video');
                 if (!vid) return;
-                item.addEventListener('mouseenter', () => vid.play());
+                item.addEventListener('mouseenter', () => {
+                    ensureVideoLoaded(vid);
+                    vid.play().catch(() => {});
+                });
                 item.addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
             });
 
@@ -1415,7 +1517,7 @@
                 if (item.dataset.type === 'video') {
                     const v = document.createElement('video');
                     v.src = item.dataset.src;
-                    v.controls = true; v.autoplay = true; v.muted = false;
+                    v.controls = true; v.autoplay = true; v.muted = true; v.playsInline = true; v.preload = 'metadata';
                     v.style.cssText = baseStyle;
                     lbMedia.appendChild(v);
                 } else {
