@@ -325,6 +325,7 @@
             cursor: pointer;
             border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.05);
+            background-color: #0a0a0a;
         }
         .vibe-item img,
         .vibe-item video {
@@ -779,7 +780,7 @@
     <section class="relative h-screen w-full overflow-hidden flex items-end pb-20 px-6 md:px-20">
         <div class="absolute inset-0 z-0">
             <img
-                src="https://res.cloudinary.com/dradv9xl8/image/upload/v1/Press_Shot_1.jpg"
+                src="https://res.cloudinary.com/dradv9xl8/image/upload/v1/Press_Shot_1_bt5mib.jpg"
                 alt="SMITH (UK)"
                 class="ken-burns-bg w-full h-full object-cover opacity-60"
             >
@@ -927,7 +928,7 @@
             autoplay muted loop playsinline preload="metadata"
             style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.4;filter:grayscale(0.8) brightness(0.7) contrast(1.2);z-index:-1;pointer-events:none;"
         >
-            <source src="https://res.cloudinary.com/dradv9xl8/video/upload/v1/heritage-bg.mp4#t=0.1" type="video/mp4">
+            <source src="https://res.cloudinary.com/dradv9xl8/video/upload/v1/heritage-bg_z9y1ik.mp4#t=0.1" type="video/mp4">
         </video>
         <!-- Radial vignette: fades hard edges to site background -->
         <div style="position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at center, transparent 35%, #050505 90%);"></div>
@@ -1127,7 +1128,7 @@
 
                     <!-- 4 · Video -->
                     <div class="vibe-item" data-type="video" data-src="assets/videos/vibe-vid-2.mp4">
-                        <video muted loop playsinline preload="none" loading="lazy" data-deferred-video>
+                        <video autoplay muted loop playsinline preload="metadata" loading="lazy" data-deferred-video>
                             <source data-src="assets/videos/vibe-vid-2.mp4#t=0.1" type="video/mp4">
                         </video>
                         <div class="vibe-play-badge">
@@ -1152,7 +1153,7 @@
 
                     <!-- 8 · Video -->
                     <div class="vibe-item" data-type="video" data-src="assets/videos/vibe-vid-6.mp4">
-                        <video muted loop playsinline preload="none" loading="lazy" data-deferred-video>
+                        <video autoplay muted loop playsinline preload="metadata" loading="lazy" data-deferred-video>
                             <source data-src="assets/videos/vibe-vid-6.mp4#t=0.1" type="video/mp4">
                         </video>
                         <div class="vibe-play-badge">
@@ -1172,7 +1173,7 @@
 
                     <!-- 11 · Video — standard, no zoom -->
                     <div class="vibe-item" data-type="video" data-src="assets/videos/vibe-vid-7.mp4">
-                        <video muted loop playsinline preload="none" loading="lazy" data-deferred-video>
+                        <video autoplay muted loop playsinline preload="metadata" loading="lazy" data-deferred-video>
                             <source data-src="assets/videos/vibe-vid-7.mp4#t=0.1" type="video/mp4">
                         </video>
                         <div class="vibe-play-badge">
@@ -1423,37 +1424,51 @@
 <script>
     const CLOUDINARY_BASE = 'https://res.cloudinary.com/dradv9xl8/';
     const DJ_VIBE_VIDEOS = [
-        'vibe-1.jpg',
-        'vibe-2.jpg',
-        'vibe-3.jpg',
-        'vibe-4.jpg',
-        'vibe-5.jpg',
-        'vibe-6.jpg',
-        'vibe-7.jpg',
-        'vibe-8.jpg',
-        'vibe-9.jpg',
-        'vibe-vid-2.mp4',
-        'vibe-vid-6.mp4',
-        'vibe-vid-7.mp4'
+      { id: 'vibe-9_mr0vas', type: 'image', ext: 'jpg' },
+      { id: 'vibe-1_esf8yz', type: 'image', ext: 'jpg' },
+      { id: 'vibe-2_wjs3fd', type: 'image', ext: 'jpg' },
+      { id: 'vibe-3_ojdh7h', type: 'image', ext: 'jpg' },
+      { id: 'vibe-8_c4cmrx', type: 'image', ext: 'jpg' },
+      { id: 'vibe-7_uykgsi', type: 'image', ext: 'jpg' },
+      { id: 'vibe-6_jshyjh', type: 'image', ext: 'jpg' },
+      { id: 'vibe-5_uu611e', type: 'image', ext: 'jpg' },
+      { id: 'vibe-vid-2_vyjm3v', type: 'video', ext: 'mov' },
+      { id: 'vibe-vid-6_s4gyss', type: 'video', ext: 'mp4' },
+      { id: 'vibe-vid-7_ac6dz3', type: 'video', ext: 'mov' }
     ];
 
-    function buildCloudinaryUrl(assetName) {
-        const [path, fragment] = assetName.split('#');
-        const resourceType = /\.mp4$/i.test(path) ? 'video' : 'image';
-        return `${CLOUDINARY_BASE}${resourceType}/upload/v1/${path}${fragment ? `#${fragment}` : ''}`;
-    }
+    const DJ_VIBE_ASSET_MAP = {
+        'vibe-9.jpg': DJ_VIBE_VIDEOS[0],
+        'vibe-1.jpg': DJ_VIBE_VIDEOS[1],
+        'vibe-2.jpg': DJ_VIBE_VIDEOS[2],
+        'vibe-3.jpg': DJ_VIBE_VIDEOS[3],
+        'vibe-8.jpg': DJ_VIBE_VIDEOS[4],
+        'vibe-7.jpg': DJ_VIBE_VIDEOS[5],
+        'vibe-6.jpg': DJ_VIBE_VIDEOS[6],
+        'vibe-5.jpg': DJ_VIBE_VIDEOS[7],
+        'vibe-vid-2.mp4': DJ_VIBE_VIDEOS[8],
+        'vibe-vid-6.mp4': DJ_VIBE_VIDEOS[9],
+        'vibe-vid-7.mp4': DJ_VIBE_VIDEOS[10]
+    };
 
-    const vibeAssetSet = new Set(DJ_VIBE_VIDEOS);
+    function buildCloudinaryUrl(item) {
+        if (!item) return '';
+        if (item.type === 'video') {
+            return CLOUDINARY_BASE + 'video/upload/v1/' + item.id + '.' + item.ext + '#t=0.1';
+        }
+        return CLOUDINARY_BASE + 'image/upload/v1/' + item.id + '.' + item.ext;
+    }
 
     document.querySelectorAll('.vibe-item').forEach((item) => {
         const originalPath = item.dataset.src || '';
         const assetName = originalPath.split('/').pop();
-        if (!assetName || !vibeAssetSet.has(assetName)) return;
+        const asset = DJ_VIBE_ASSET_MAP[assetName];
+        if (!asset) return;
 
-        const assetUrl = buildCloudinaryUrl(assetName);
+        const assetUrl = buildCloudinaryUrl(asset);
         item.dataset.src = assetUrl;
 
-        if (item.dataset.type === 'image') {
+        if (asset.type === 'image') {
             const img = item.querySelector('img');
             if (img) img.src = assetUrl;
             return;
@@ -1461,7 +1476,7 @@
 
         const source = item.querySelector('source');
         if (source) {
-            source.dataset.src = buildCloudinaryUrl(`${assetName}#t=0.1`);
+            source.dataset.src = assetUrl;
         }
     });
 
