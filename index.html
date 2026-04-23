@@ -409,6 +409,10 @@
         }
         @media (max-width: 767px) {
             .vibe-strip { height: 260px; gap: 12px; padding: 10px 14px; }
+            .vibe-item {
+                background-color: #0a0a0a;
+                aspect-ratio: 9 / 16;
+            }
             .vibe-item.vibe-featured { width: 340px; }
             .vibe-item.vibe-zoom     { width: 300px; }
             .vibe-item[data-type="video"] {
@@ -775,7 +779,7 @@
     <section class="relative h-screen w-full overflow-hidden flex items-end pb-20 px-6 md:px-20">
         <div class="absolute inset-0 z-0">
             <img
-                src="Press_Shot_1.jpg"
+                src="https://res.cloudinary.com/dradv9xl8/image/upload/v1/Press_Shot_1.jpg"
                 alt="SMITH (UK)"
                 class="ken-burns-bg w-full h-full object-cover opacity-60"
             >
@@ -920,10 +924,10 @@
 
         <!-- Cinematic video background -->
         <video
-            autoplay muted loop playsinline preload="none" loading="lazy" data-deferred-video
+            autoplay muted loop playsinline preload="metadata"
             style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.4;filter:grayscale(0.8) brightness(0.7) contrast(1.2);z-index:-1;pointer-events:none;"
         >
-            <source data-src="heritage-bg.mp4#t=0.1" type="video/mp4">
+            <source src="https://res.cloudinary.com/dradv9xl8/video/upload/v1/heritage-bg.mp4#t=0.1" type="video/mp4">
         </video>
         <!-- Radial vignette: fades hard edges to site background -->
         <div style="position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at center, transparent 35%, #050505 90%);"></div>
@@ -1416,8 +1420,52 @@
         </div>
     </nav>
 
-    <script>
-        // ── Vibe Film Strip — drag-scroll, hover-play & lightbox ─────────
+<script>
+    const CLOUDINARY_BASE = 'https://res.cloudinary.com/dradv9xl8/';
+    const DJ_VIBE_VIDEOS = [
+        'vibe-1.jpg',
+        'vibe-2.jpg',
+        'vibe-3.jpg',
+        'vibe-4.jpg',
+        'vibe-5.jpg',
+        'vibe-6.jpg',
+        'vibe-7.jpg',
+        'vibe-8.jpg',
+        'vibe-9.jpg',
+        'vibe-vid-2.mp4',
+        'vibe-vid-6.mp4',
+        'vibe-vid-7.mp4'
+    ];
+
+    function buildCloudinaryUrl(assetName) {
+        const [path, fragment] = assetName.split('#');
+        const resourceType = /\.mp4$/i.test(path) ? 'video' : 'image';
+        return `${CLOUDINARY_BASE}${resourceType}/upload/v1/${path}${fragment ? `#${fragment}` : ''}`;
+    }
+
+    const vibeAssetSet = new Set(DJ_VIBE_VIDEOS);
+
+    document.querySelectorAll('.vibe-item').forEach((item) => {
+        const originalPath = item.dataset.src || '';
+        const assetName = originalPath.split('/').pop();
+        if (!assetName || !vibeAssetSet.has(assetName)) return;
+
+        const assetUrl = buildCloudinaryUrl(assetName);
+        item.dataset.src = assetUrl;
+
+        if (item.dataset.type === 'image') {
+            const img = item.querySelector('img');
+            if (img) img.src = assetUrl;
+            return;
+        }
+
+        const source = item.querySelector('source');
+        if (source) {
+            source.dataset.src = buildCloudinaryUrl(`${assetName}#t=0.1`);
+        }
+    });
+
+    // ── Vibe Film Strip — drag-scroll, hover-play & lightbox ─────────
         (function () {
             const items   = Array.from(document.querySelectorAll('.vibe-item'));
             const strip   = document.getElementById('vibe-strip');
