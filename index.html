@@ -281,6 +281,15 @@
             border-radius: 12px;
             overflow: hidden;
         }
+        #heritage video {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
         /* Film-grain texture — low-opacity SVG noise tiles over the strip */
         .vibe-strip-card::after {
             content: '';
@@ -927,7 +936,7 @@
         <!-- Cinematic video background -->
         <video
             id="heritage-bg-video"
-            autoplay muted loop playsinline preload="metadata"
+            autoplay muted loop playsinline preload="auto" poster="https://res.cloudinary.com/dradv9xl8/image/upload/v1/Press_Shot_1_bt5mib.jpg"
             style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.4;filter:grayscale(0.8) brightness(0.7) contrast(1.2);z-index:-1;pointer-events:none;"
         >
             <source src="https://res.cloudinary.com/dradv9xl8/video/upload/v1/heritage-bg_z9y1ik.mp4#t=0.1" type="video/mp4">
