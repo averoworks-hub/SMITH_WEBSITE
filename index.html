@@ -251,19 +251,11 @@
 
         /* ── Vibe Film Strip ─────────────────────────────────────────────── */
 
-        /* Skip-render until near viewport — browser skips layout/paint when off-screen */
-        #heritage {
-            content-visibility: auto;
-            contain-intrinsic-size: 0 900px;
-        }
-
         /* Section cursor-glow — radial teal shimmer follows mouse */
         #vibe {
             position: relative;
             --vibe-glow-x: 50%;
             --vibe-glow-y: 50%;
-            content-visibility: auto;
-            contain-intrinsic-size: 0 650px;
         }
         #vibe::before {
             content: '';
@@ -301,9 +293,16 @@
             top: 0;
             left: 0;
             z-index: -1;
-            /* Force GPU compositing layer — prevents Safari layout-quirk blank */
             transform: translateZ(0);
             -webkit-transform: translateZ(0);
+        }
+
+        /* Heritage: video on desktop, static image on mobile — no JS needed */
+        .heritage-video-desktop { display: block; }
+        .heritage-img-mobile    { display: none;  }
+        @media (max-width: 1023px) {
+            .heritage-video-desktop { display: none;  }
+            .heritage-img-mobile    { display: block; }
         }
 
         /* Film-grain texture — low-opacity SVG noise tiles over the strip */
@@ -964,15 +963,24 @@
     <!-- HERITAGE & PEDIGREE ────────────────────────────────────────────── -->
     <section id="heritage" class="relative py-24 px-6 md:px-20 border-b border-white/5 overflow-hidden">
 
-        <!-- Cinematic video background — local file, mobile Safari forced via window.load .play() -->
+        <!-- Desktop: cinematic video background -->
         <video
             id="heritage-bg-video"
-            autoplay muted loop playsinline preload="none"
+            class="heritage-video-desktop"
+            autoplay muted loop playsinline preload="metadata"
             poster="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto/v1/Press_Shot_1_bt5mib.jpg"
             style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.4;filter:grayscale(0.8) brightness(0.7) contrast(1.2);z-index:-1;pointer-events:none;"
         >
             <source src="./heritage-bg.mp4" type="video/mp4">
         </video>
+        <!-- Mobile: static image — zero video download cost -->
+        <img
+            class="heritage-img-mobile"
+            src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto/v1/Press_Shot_1_bt5mib.jpg"
+            alt=""
+            aria-hidden="true"
+            style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.4;filter:grayscale(0.8) brightness(0.7) contrast(1.2);pointer-events:none;"
+        >
         <!-- Radial vignette: fades hard edges to site background -->
         <div style="position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at center, transparent 35%, #050505 90%);"></div>
         <!-- Bottom gradient: smooth transition into next section -->
@@ -1150,9 +1158,75 @@
                 data-reveal data-reveal-delay="100">Vibe</h2>
             <p class="text-center text-gray-600 text-xs uppercase tracking-[0.3em] mb-8" data-reveal data-reveal-delay="200">Drag or scroll to explore</p>
 
-            <!-- Film strip card -->
+            <!-- Film strip card — static HTML, no JS hydration required -->
             <div class="vibe-strip-card" data-reveal data-reveal-delay="300">
-                <div class="vibe-strip" id="vibe-strip"></div><!-- /vibe-strip -->
+                <div class="vibe-strip" id="vibe-strip">
+
+                    <!-- 1. vibe-9 — featured hero tile -->
+                    <div class="vibe-item vibe-featured" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-9_mr0vas.jpg">
+                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-9_mr0vas.jpg" alt="Vibe" loading="lazy">
+                    </div>
+
+                    <!-- 2. vibe-1 -->
+                    <div class="vibe-item" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-1_esf8yz.jpg">
+                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-1_esf8yz.jpg" alt="Vibe" loading="lazy">
+                    </div>
+
+                    <!-- 3. vibe-2 -->
+                    <div class="vibe-item" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-2_wjs3fd.jpg">
+                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-2_wjs3fd.jpg" alt="Vibe" loading="lazy">
+                    </div>
+
+                    <!-- 4. vibe-vid-2 — video -->
+                    <div class="vibe-item" data-type="video" data-src="https://res.cloudinary.com/dradv9xl8/video/upload/f_auto,q_auto/v1/vibe-vid-2_vyjm3v.mov">
+                        <video autoplay muted loop playsinline preload="none">
+                            <source src="https://res.cloudinary.com/dradv9xl8/video/upload/f_auto,q_auto/v1/vibe-vid-2_vyjm3v.mov" type="video/mp4">
+                        </video>
+                        <div class="vibe-play-badge"><svg width="9" height="11" viewBox="0 0 9 11" fill="white"><path d="M0 0L9 5.5L0 11Z"/></svg></div>
+                    </div>
+
+                    <!-- 5. vibe-3 -->
+                    <div class="vibe-item" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-3_ojdh7h.jpg">
+                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-3_ojdh7h.jpg" alt="Vibe" loading="lazy">
+                    </div>
+
+                    <!-- 6. vibe-5 -->
+                    <div class="vibe-item" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-5_uu611e.jpg">
+                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-5_uu611e.jpg" alt="Vibe" loading="lazy">
+                    </div>
+
+                    <!-- 7. vibe-6 -->
+                    <div class="vibe-item" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-6_jshyjh.jpg">
+                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-6_jshyjh.jpg" alt="Vibe" loading="lazy">
+                    </div>
+
+                    <!-- 8. vibe-vid-6 — video -->
+                    <div class="vibe-item" data-type="video" data-src="https://res.cloudinary.com/dradv9xl8/video/upload/f_auto,q_auto/v1/vibe-vid-6_s4gyss.mp4">
+                        <video autoplay muted loop playsinline preload="none">
+                            <source src="https://res.cloudinary.com/dradv9xl8/video/upload/f_auto,q_auto/v1/vibe-vid-6_s4gyss.mp4" type="video/mp4">
+                        </video>
+                        <div class="vibe-play-badge"><svg width="9" height="11" viewBox="0 0 9 11" fill="white"><path d="M0 0L9 5.5L0 11Z"/></svg></div>
+                    </div>
+
+                    <!-- 9. vibe-7 — zoom -->
+                    <div class="vibe-item vibe-zoom" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-7_uykgsi.jpg">
+                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-7_uykgsi.jpg" alt="Vibe" loading="lazy">
+                    </div>
+
+                    <!-- 10. vibe-8 -->
+                    <div class="vibe-item" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-8_c4cmrx.jpg">
+                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-8_c4cmrx.jpg" alt="Vibe" loading="lazy">
+                    </div>
+
+                    <!-- 11. vibe-vid-7 — video -->
+                    <div class="vibe-item" data-type="video" data-src="https://res.cloudinary.com/dradv9xl8/video/upload/f_auto,q_auto/v1/vibe-vid-7_ac6dz3.mov">
+                        <video autoplay muted loop playsinline preload="none">
+                            <source src="https://res.cloudinary.com/dradv9xl8/video/upload/f_auto,q_auto/v1/vibe-vid-7_ac6dz3.mov" type="video/mp4">
+                        </video>
+                        <div class="vibe-play-badge"><svg width="9" height="11" viewBox="0 0 9 11" fill="white"><path d="M0 0L9 5.5L0 11Z"/></svg></div>
+                    </div>
+
+                </div><!-- /vibe-strip -->
             </div><!-- /vibe-strip-card -->
 
         </div>
@@ -1393,36 +1467,7 @@
     </nav>
 
 <script>
-    const CLOUDINARY_BASE = 'https://res.cloudinary.com/dradv9xl8/';
-    const DJ_VIBE_VIDEOS = [
-      { id: 'vibe-9_mr0vas', type: 'image', ext: 'jpg' },
-      { id: 'vibe-1_esf8yz', type: 'image', ext: 'jpg' },
-      { id: 'vibe-2_wjs3fd', type: 'image', ext: 'jpg' },
-      { id: 'vibe-3_ojdh7h', type: 'image', ext: 'jpg' },
-      { id: 'vibe-8_c4cmrx', type: 'image', ext: 'jpg' },
-      { id: 'vibe-7_uykgsi', type: 'image', ext: 'jpg' },
-      { id: 'vibe-6_jshyjh', type: 'image', ext: 'jpg' },
-      { id: 'vibe-5_uu611e', type: 'image', ext: 'jpg' },
-      { id: 'vibe-vid-2_vyjm3v', type: 'video', ext: 'mov' },
-      { id: 'vibe-vid-6_s4gyss', type: 'video', ext: 'mp4' },
-      { id: 'vibe-vid-7_ac6dz3', type: 'video', ext: 'mov' }
-    ];
-
-    const VIBE_STRIP_ITEMS = [
-        { asset: DJ_VIBE_VIDEOS[0], className: 'vibe-featured' },
-        { asset: DJ_VIBE_VIDEOS[1], className: '' },
-        { asset: DJ_VIBE_VIDEOS[2], className: '' },
-        { asset: DJ_VIBE_VIDEOS[8], className: '' },
-        { asset: DJ_VIBE_VIDEOS[3], className: '' },
-        { asset: DJ_VIBE_VIDEOS[7], className: '' },
-        { asset: DJ_VIBE_VIDEOS[6], className: '' },
-        { asset: DJ_VIBE_VIDEOS[9], className: '' },
-        { asset: DJ_VIBE_VIDEOS[5], className: 'vibe-zoom' },
-        { asset: DJ_VIBE_VIDEOS[4], className: '' },
-        { asset: DJ_VIBE_VIDEOS[10], className: '' }
-    ];
-
-    // ── Debounce utility — collapses rapid-fire events to one call ────────
+    // ── Debounce utility ─────────────────────────────────────────────────
     function debounce(fn, wait) {
         let timer;
         return function () {
@@ -1431,113 +1476,7 @@
         };
     }
 
-    function buildCloudinaryUrl(item) {
-        if (!item) return '';
-        const basePath = item.type === 'video'
-            ? CLOUDINARY_BASE + 'video/upload/f_auto,q_auto/v1/'
-            : CLOUDINARY_BASE + 'image/upload/f_auto,q_auto/v1/';
-        const assetUrl = basePath + item.id + '.' + item.ext;
-        return item.type === 'video' ? assetUrl + '#t=0.1' : assetUrl;
-    }
-
-    async function verifyCloudinaryAsset(url, type) {
-        try {
-            const response = await fetch(url, { method: 'HEAD' });
-            if (!response.ok) {
-                console.error(`[Cloudinary ${type} ${response.status}] ${url}`);
-                return false;
-            }
-            return true;
-        } catch (error) {
-            console.error(`[Cloudinary ${type} fetch failed] ${url}`, error);
-            return false;
-        }
-    }
-
-    function createVibePlayBadge() {
-        const badge = document.createElement('div');
-        badge.className = 'vibe-play-badge';
-        badge.innerHTML = '<svg width="9" height="11" viewBox="0 0 9 11" fill="white"><path d="M0 0L9 5.5L0 11Z"/></svg>';
-        return badge;
-    }
-
-    async function hydrateVibeItem(item) {
-        if (!item || item.dataset.hydrated === 'true' || item.dataset.hydrating === 'true') return;
-
-        const mediaUrl = item.dataset.src;
-        const mediaType = item.dataset.type;
-        if (!mediaUrl || !mediaType) return;
-
-        item.dataset.hydrating = 'true';
-        const isValid = await verifyCloudinaryAsset(mediaUrl, mediaType);
-        if (!isValid) {
-            // Collapse the empty tile so it doesn't create a phantom gap in the strip
-            item.style.display = 'none';
-            item.dataset.hydrating = 'false';
-            return;
-        }
-
-        if (mediaType === 'video') {
-            const video = document.createElement('video');
-            video.src = mediaUrl;
-            video.autoplay = true;
-            video.muted = true;
-            video.loop = true;
-            video.playsInline = true;
-            video.preload = 'none';
-            video.setAttribute('preload', 'none');
-            video.setAttribute('playsinline', '');
-            video.setAttribute('muted', '');
-            video.setAttribute('loop', '');
-            video.addEventListener('error', () => {
-                console.error(`[Cloudinary video element failed] ${mediaUrl}`);
-            }, { once: true });
-            const badge = item.querySelector('.vibe-play-badge');
-            item.insertBefore(video, badge || null);
-        } else {
-            const img = document.createElement('img');
-            img.src = mediaUrl;
-            img.alt = 'Vibe';
-            img.loading = 'lazy';
-            img.addEventListener('error', () => {
-                console.error(`[Cloudinary image element failed] ${mediaUrl}`);
-            }, { once: true });
-            item.appendChild(img);
-        }
-
-        item.dataset.hydrated = 'true';
-        item.dataset.hydrating = 'false';
-    }
-
-    function renderVibeStripItems() {
-        const strip = document.getElementById('vibe-strip');
-        if (!strip) return [];
-
-        strip.innerHTML = "";
-
-        VIBE_STRIP_ITEMS.forEach(({ asset, className }) => {
-            if (!asset || !asset.id || !asset.type || !asset.ext) return;
-
-            const assetUrl = buildCloudinaryUrl(asset);
-            if (!assetUrl) return;
-
-            const item = document.createElement('div');
-            item.className = className ? `vibe-item ${className}` : 'vibe-item';
-            item.dataset.type = asset.type;
-            item.dataset.src = assetUrl;
-            item.dataset.hydrated = 'false';
-
-            if (asset.type === 'video') {
-                item.appendChild(createVibePlayBadge());
-            }
-
-            strip.appendChild(item);
-        });
-
-        return Array.from(strip.querySelectorAll('.vibe-item'));
-    }
-
-    // ── Vibe Film Strip — drag-scroll, hover-play & lightbox ─────────
+    // ── Vibe Film Strip — drag-scroll, hover-play & lightbox ──────────────
     (function () {
         const strip   = document.getElementById('vibe-strip');
         const lb      = document.getElementById('vibe-lb');
@@ -1548,74 +1487,23 @@
         const lbCount = document.getElementById('vibe-lb-counter');
         if (!strip || !lb) return;
 
-        const items = renderVibeStripItems();
+        // Items are static HTML — simply query them
+        const items = Array.from(strip.querySelectorAll('.vibe-item'));
         let cur = 0, didDrag = false;
 
-        if ('IntersectionObserver' in window) {
-            // Hydrate early — 300px look-ahead so assets are ready before scrolling to them
-            const hydrateObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach((entry) => {
-                    if (!entry.isIntersecting) return;
-                    hydrateVibeItem(entry.target);
-                    observer.unobserve(entry.target);
-                });
-            }, {
-                root: strip,
-                rootMargin: '300px',
-                threshold: 0.01
-            });
-
-            // Upgrade video preload to "metadata" only when the tile is actually visible
-            const preloadObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach((entry) => {
-                    if (!entry.isIntersecting) return;
-                    const item = entry.target;
-                    if (item.dataset.type === 'video') {
-                        const vid = item.querySelector('video');
-                        if (vid && vid.preload === 'none') {
-                            vid.preload = 'metadata';
-                            vid.setAttribute('preload', 'metadata');
-                            vid.load();
-                        }
-                    }
-                    observer.unobserve(item);
-                });
-            }, {
-                root: strip,
-                rootMargin: '0px',
-                threshold: 0.5
-            });
-
-            items.forEach(item => {
-                hydrateObserver.observe(item);
-                if (item.dataset.type === 'video') preloadObserver.observe(item);
-            });
-        } else {
-            items.forEach(hydrateVibeItem);
-        }
-
+        // Hover-play for inline vibe videos (desktop)
         items.forEach((item, i) => {
             if (item.dataset.type === 'video') {
-                item.addEventListener('mouseenter', () => {
-                    hydrateVibeItem(item);
-                    const vid = item.querySelector('video');
-                    if (vid) vid.play().catch(() => {});
-                });
-                item.addEventListener('mouseleave', () => {
-                    const vid = item.querySelector('video');
-                    if (!vid) return;
-                    vid.pause();
-                    vid.currentTime = 0;
-                });
+                const vid = item.querySelector('video');
+                if (vid) {
+                    item.addEventListener('mouseenter', () => vid.play().catch(() => {}));
+                    item.addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
+                }
             }
-
-            item.addEventListener('click', () => {
-                if (!didDrag) open(i);
-            });
+            item.addEventListener('click', () => { if (!didDrag) open(i); });
         });
 
-        // Section cursor-glow — teal shimmer follows mouse inside #vibe
-        // rAF-throttled: coalesces to one update per rendered frame max
+        // Section cursor-glow — rAF-throttled: one DOM write per frame maximum
         const vibeSection = document.getElementById('vibe');
         if (vibeSection) {
             let glowRaf = false;
@@ -1630,9 +1518,7 @@
                     glowRaf = false;
                 });
             });
-            vibeSection.addEventListener('mouseleave', () => {
-                vibeSection.classList.remove('vibe-glow-on');
-            });
+            vibeSection.addEventListener('mouseleave', () => vibeSection.classList.remove('vibe-glow-on'));
         }
 
         // Drag-to-scroll (mouse only — touch handled natively)
@@ -1644,7 +1530,7 @@
             strip.style.cursor = 'grabbing';
         });
         const endDrag = () => { isDown = false; strip.style.cursor = 'grab'; };
-        strip.addEventListener('mouseup', endDrag);
+        strip.addEventListener('mouseup',    endDrag);
         strip.addEventListener('mouseleave', endDrag);
         strip.addEventListener('mousemove', e => {
             if (!isDown) return;
@@ -1697,109 +1583,57 @@
         });
     })();
 
-    // ── Scroll Reveal ─────────────────────────────────────────────────
-
-        (function () {
-            const els = document.querySelectorAll('[data-reveal]');
-            if (!els.length) return;
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.12 });
-            els.forEach(el => observer.observe(el));
-        })();
-
-        // ── Heritage Video — Mobile Remove / Desktop Deferred Load ────────────
-        (function () {
-            const heritageSection = document.getElementById('heritage');
-            const heritageVideo   = document.getElementById('heritage-bg-video');
-            if (!heritageVideo) return;
-
-            // On mobile (< 1024px) the 29 MB video is a pure performance drain — remove it.
-            // The CSS fallback gradient on #heritage keeps the section looking good.
-            if (window.innerWidth < 1024) {
-                heritageVideo.remove();
-                return;
-            }
-
-            // Desktop: ensure Safari-critical attributes are set as both props and attrs
-            heritageVideo.setAttribute('playsinline', '');
-            heritageVideo.setAttribute('muted', '');
-            heritageVideo.muted      = true;
-            heritageVideo.playsInline = true;
-
-            // Deferred load — only fetch video data when the section is within 500px
-            function activateHeritage() {
-                heritageVideo.preload = 'metadata';
-                heritageVideo.setAttribute('preload', 'metadata');
-                heritageVideo.load();
-                // 1 s delay gives Safari time to settle before play()
-                setTimeout(function () {
-                    heritageVideo.play().catch(function () {});
-                }, 1000);
-            }
-
-            if ('IntersectionObserver' in window && heritageSection) {
-                const hObserver = new IntersectionObserver(function (entries, obs) {
-                    if (entries[0].isIntersecting) {
-                        activateHeritage();
-                        obs.disconnect();
-                    }
-                }, { rootMargin: '500px' });
-                hObserver.observe(heritageSection);
-            } else {
-                // Fallback for browsers without IO support
-                activateHeritage();
-            }
-        })();
-
-        // ── Social Dock — fade in after user scrolls past hero ────────────
-        (function () {
-            const dock   = document.getElementById('social-dock');
-            const heroEl = document.querySelector('section'); // first section = hero
-            if (!dock) return;
-
-            function checkDock() {
-                // Show dock once user has scrolled past 50% of the hero height (or 300px)
-                const threshold = heroEl ? heroEl.offsetHeight * 0.5 : 300;
-                dock.classList.toggle('dock-visible', window.scrollY > threshold);
-            }
-
-            window.addEventListener('scroll', debounce(checkDock, 50), { passive: true });
-            checkDock(); // run once on load (hidden at top)
-        })();
-
-        // ── Mobile Navigation ─────────────────────────────────────────────
-        (function () {
-            const nav = document.querySelector('.nav-glass');
-            const toggle = document.getElementById('mobile-menu-toggle');
-            const menu = document.getElementById('mobile-menu');
-            if (!nav || !toggle || !menu) return;
-
-            function setOpen(isOpen) {
-                toggle.setAttribute('aria-expanded', String(isOpen));
-                menu.hidden = !isOpen;
-                nav.classList.toggle('active', isOpen);
-            }
-
-            toggle.addEventListener('click', () => {
-                const isOpen = toggle.getAttribute('aria-expanded') === 'true';
-                setOpen(!isOpen);
+    // ── Scroll Reveal ─────────────────────────────────────────────────────
+    (function () {
+        const els = document.querySelectorAll('[data-reveal]');
+        if (!els.length) return;
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
             });
+        }, { threshold: 0.12 });
+        els.forEach(el => observer.observe(el));
+    })();
 
-            menu.querySelectorAll('a').forEach((link) => {
-                link.addEventListener('click', () => setOpen(false));
-            });
+    // ── Social Dock — fade in after user scrolls past hero ────────────────
+    (function () {
+        const dock   = document.getElementById('social-dock');
+        const heroEl = document.querySelector('section');
+        if (!dock) return;
+        function checkDock() {
+            const threshold = heroEl ? heroEl.offsetHeight * 0.5 : 300;
+            dock.classList.toggle('dock-visible', window.scrollY > threshold);
+        }
+        window.addEventListener('scroll', debounce(checkDock, 50), { passive: true });
+        checkDock();
+    })();
 
-            window.addEventListener('resize', debounce(() => {
-                if (window.innerWidth > 768) setOpen(false);
-            }, 100));
-        })();
-    </script>
+    // ── Mobile Navigation ─────────────────────────────────────────────────
+    (function () {
+        const nav    = document.querySelector('.nav-glass');
+        const toggle = document.getElementById('mobile-menu-toggle');
+        const menu   = document.getElementById('mobile-menu');
+        if (!nav || !toggle || !menu) return;
+
+        function setOpen(isOpen) {
+            toggle.setAttribute('aria-expanded', String(isOpen));
+            menu.hidden = !isOpen;
+            nav.classList.toggle('active', isOpen);
+        }
+
+        toggle.addEventListener('click', () => {
+            const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+            setOpen(!isOpen);
+        });
+        menu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setOpen(false)));
+        window.addEventListener('resize', debounce(() => {
+            if (window.innerWidth > 768) setOpen(false);
+        }, 100));
+    })();
+</script>
 
 </body>
 </html>
