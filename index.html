@@ -20,6 +20,10 @@
         }
         .ken-burns-bg {
             animation: kenburns 24s ease-in-out infinite alternate;
+            will-change: transform;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
         }
 
         /* ── Glassmorphism Navigation ────────────────────────────────────── */
@@ -247,11 +251,19 @@
 
         /* ── Vibe Film Strip ─────────────────────────────────────────────── */
 
+        /* Skip-render until near viewport — browser skips layout/paint when off-screen */
+        #heritage {
+            content-visibility: auto;
+            contain-intrinsic-size: 0 900px;
+        }
+
         /* Section cursor-glow — radial teal shimmer follows mouse */
         #vibe {
             position: relative;
             --vibe-glow-x: 50%;
             --vibe-glow-y: 50%;
+            content-visibility: auto;
+            contain-intrinsic-size: 0 650px;
         }
         #vibe::before {
             content: '';
@@ -322,6 +334,10 @@
             scrollbar-width: thin;
             scrollbar-color: #14b8a6 rgba(0, 0, 0, 0.5);
             cursor: grab;
+            will-change: scroll-position;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
         }
         .vibe-strip:active { cursor: grabbing; }
         /* Teal scrollbar — Chrome/Safari */
@@ -805,7 +821,7 @@
     <section class="relative h-screen w-full overflow-hidden flex items-end pb-20 px-6 md:px-20">
         <div class="absolute inset-0 z-0">
             <img
-                src="https://res.cloudinary.com/dradv9xl8/image/upload/v1/Press_Shot_1_bt5mib.jpg"
+                src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto/v1/Press_Shot_1_bt5mib.jpg"
                 alt="SMITH (UK)"
                 class="ken-burns-bg w-full h-full object-cover opacity-60"
             >
@@ -864,7 +880,7 @@
                 <p data-reveal data-reveal-delay="300">Transitioning from his previous alias (S.M.I.T.H) to his current identity, the SMITH (UK) project represents a refined evolution of his craft. His production output is a testament to this, consistently hitting the upper echelons of the Beatport charts.</p>
             </div>
             <div class="relative" data-reveal data-reveal-delay="200">
-                <img src="https://res.cloudinary.com/dradv9xl8/image/upload/v1/Press_Shot_2_kofh7y.jpg" alt="In the Studio" loading="lazy" class="rounded-sm border border-white/10 transition duration-700">
+                <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto/v1/Press_Shot_2_kofh7y.jpg" alt="In the Studio" loading="lazy" class="rounded-sm border border-white/10 transition duration-700">
                 <div class="absolute -bottom-6 -right-6 w-32 h-32 border-r-2 border-b-2 border-teal-500"></div>
             </div>
         </div>
@@ -951,8 +967,8 @@
         <!-- Cinematic video background — local file, mobile Safari forced via window.load .play() -->
         <video
             id="heritage-bg-video"
-            autoplay muted loop playsinline preload="metadata"
-            poster="https://res.cloudinary.com/dradv9xl8/image/upload/v1/Press_Shot_1_bt5mib.jpg"
+            autoplay muted loop playsinline preload="none"
+            poster="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto/v1/Press_Shot_1_bt5mib.jpg"
             style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.4;filter:grayscale(0.8) brightness(0.7) contrast(1.2);z-index:-1;pointer-events:none;"
         >
             <source src="./heritage-bg.mp4" type="video/mp4">
@@ -1406,11 +1422,20 @@
         { asset: DJ_VIBE_VIDEOS[10], className: '' }
     ];
 
+    // ── Debounce utility — collapses rapid-fire events to one call ────────
+    function debounce(fn, wait) {
+        let timer;
+        return function () {
+            clearTimeout(timer);
+            timer = setTimeout(fn.bind(this, ...arguments), wait);
+        };
+    }
+
     function buildCloudinaryUrl(item) {
         if (!item) return '';
         const basePath = item.type === 'video'
-            ? CLOUDINARY_BASE + 'video/upload/v1/'
-            : CLOUDINARY_BASE + 'image/upload/v1/';
+            ? CLOUDINARY_BASE + 'video/upload/f_auto,q_auto/v1/'
+            : CLOUDINARY_BASE + 'image/upload/f_auto,q_auto/v1/';
         const assetUrl = basePath + item.id + '.' + item.ext;
         return item.type === 'video' ? assetUrl + '#t=0.1' : assetUrl;
     }
@@ -1459,8 +1484,8 @@
             video.muted = true;
             video.loop = true;
             video.playsInline = true;
-            video.preload = 'metadata';
-            video.setAttribute('preload', 'metadata');
+            video.preload = 'none';
+            video.setAttribute('preload', 'none');
             video.setAttribute('playsinline', '');
             video.setAttribute('muted', '');
             video.setAttribute('loop', '');
@@ -1527,6 +1552,7 @@
         let cur = 0, didDrag = false;
 
         if ('IntersectionObserver' in window) {
+            // Hydrate early — 300px look-ahead so assets are ready before scrolling to them
             const hydrateObserver = new IntersectionObserver((entries, observer) => {
                 entries.forEach((entry) => {
                     if (!entry.isIntersecting) return;
@@ -1535,11 +1561,35 @@
                 });
             }, {
                 root: strip,
-                rootMargin: '150px',
+                rootMargin: '300px',
                 threshold: 0.01
             });
 
-            items.forEach(item => hydrateObserver.observe(item));
+            // Upgrade video preload to "metadata" only when the tile is actually visible
+            const preloadObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    const item = entry.target;
+                    if (item.dataset.type === 'video') {
+                        const vid = item.querySelector('video');
+                        if (vid && vid.preload === 'none') {
+                            vid.preload = 'metadata';
+                            vid.setAttribute('preload', 'metadata');
+                            vid.load();
+                        }
+                    }
+                    observer.unobserve(item);
+                });
+            }, {
+                root: strip,
+                rootMargin: '0px',
+                threshold: 0.5
+            });
+
+            items.forEach(item => {
+                hydrateObserver.observe(item);
+                if (item.dataset.type === 'video') preloadObserver.observe(item);
+            });
         } else {
             items.forEach(hydrateVibeItem);
         }
@@ -1565,13 +1615,20 @@
         });
 
         // Section cursor-glow — teal shimmer follows mouse inside #vibe
+        // rAF-throttled: coalesces to one update per rendered frame max
         const vibeSection = document.getElementById('vibe');
         if (vibeSection) {
+            let glowRaf = false;
             vibeSection.addEventListener('mousemove', e => {
-                const r = vibeSection.getBoundingClientRect();
-                vibeSection.style.setProperty('--vibe-glow-x', (e.clientX - r.left) + 'px');
-                vibeSection.style.setProperty('--vibe-glow-y', (e.clientY - r.top)  + 'px');
-                vibeSection.classList.add('vibe-glow-on');
+                if (glowRaf) return;
+                glowRaf = true;
+                requestAnimationFrame(() => {
+                    const r = vibeSection.getBoundingClientRect();
+                    vibeSection.style.setProperty('--vibe-glow-x', (e.clientX - r.left) + 'px');
+                    vibeSection.style.setProperty('--vibe-glow-y', (e.clientY - r.top)  + 'px');
+                    vibeSection.classList.add('vibe-glow-on');
+                    glowRaf = false;
+                });
             });
             vibeSection.addEventListener('mouseleave', () => {
                 vibeSection.classList.remove('vibe-glow-on');
@@ -1656,24 +1713,48 @@
             els.forEach(el => observer.observe(el));
         })();
 
-        // ── Heritage Video Mobile Hardening ───────────────────────────
-        // Forces playback on mobile Safari which silently ignores autoplay
-        // until user interaction unless .play() is called explicitly post-load.
+        // ── Heritage Video — Mobile Remove / Desktop Deferred Load ────────────
         (function () {
-            const heritageVideo = document.getElementById('heritage-bg-video');
+            const heritageSection = document.getElementById('heritage');
+            const heritageVideo   = document.getElementById('heritage-bg-video');
             if (!heritageVideo) return;
 
+            // On mobile (< 1024px) the 29 MB video is a pure performance drain — remove it.
+            // The CSS fallback gradient on #heritage keeps the section looking good.
+            if (window.innerWidth < 1024) {
+                heritageVideo.remove();
+                return;
+            }
+
+            // Desktop: ensure Safari-critical attributes are set as both props and attrs
             heritageVideo.setAttribute('playsinline', '');
             heritageVideo.setAttribute('muted', '');
-            heritageVideo.muted = true;
+            heritageVideo.muted      = true;
             heritageVideo.playsInline = true;
 
-            window.addEventListener('load', function () {
-                // 1 s delay gives Safari time to settle before the play() call
+            // Deferred load — only fetch video data when the section is within 500px
+            function activateHeritage() {
+                heritageVideo.preload = 'metadata';
+                heritageVideo.setAttribute('preload', 'metadata');
+                heritageVideo.load();
+                // 1 s delay gives Safari time to settle before play()
                 setTimeout(function () {
                     heritageVideo.play().catch(function () {});
                 }, 1000);
-            });
+            }
+
+            if ('IntersectionObserver' in window && heritageSection) {
+                const hObserver = new IntersectionObserver(function (entries, obs) {
+                    if (entries[0].isIntersecting) {
+                        activateHeritage();
+                        obs.disconnect();
+                    }
+                }, { rootMargin: '500px' });
+                hObserver.observe(heritageSection);
+            } else {
+                // Fallback for browsers without IO support
+                activateHeritage();
+            }
         })();
 
         // ── Social Dock — fade in after user scrolls past hero ────────────
@@ -1688,7 +1769,7 @@
                 dock.classList.toggle('dock-visible', window.scrollY > threshold);
             }
 
-            window.addEventListener('scroll', checkDock, { passive: true });
+            window.addEventListener('scroll', debounce(checkDock, 50), { passive: true });
             checkDock(); // run once on load (hidden at top)
         })();
 
@@ -1714,9 +1795,9 @@
                 link.addEventListener('click', () => setOpen(false));
             });
 
-            window.addEventListener('resize', () => {
+            window.addEventListener('resize', debounce(() => {
                 if (window.innerWidth > 768) setOpen(false);
-            });
+            }, 100));
         })();
     </script>
 
