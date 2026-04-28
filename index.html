@@ -336,6 +336,7 @@
             border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.05);
             background-color: #0a0a0a;
+            margin: 0;
         }
         .vibe-item img,
         .vibe-item video {
@@ -420,10 +421,20 @@
             z-index: 2;
         }
         @media (max-width: 767px) {
-            .vibe-strip { height: 260px; gap: 12px; padding: 10px 14px; }
+            .vibe-strip {
+                height: 260px;
+                gap: 12px;
+                padding: 10px 14px;
+            }
+            .vibe-strip::before,
+            .vibe-strip::after {
+                content: none;
+                display: none;
+            }
             .vibe-item {
                 background-color: #0a0a0a;
                 aspect-ratio: 9 / 16;
+                margin: 0;
             }
             .vibe-item.vibe-featured { width: 340px; }
             .vibe-item.vibe-zoom     { width: 300px; }
@@ -1472,13 +1483,18 @@
         const strip = document.getElementById('vibe-strip');
         if (!strip) return [];
 
-        strip.innerHTML = '';
+        strip.innerHTML = "";
 
         VIBE_STRIP_ITEMS.forEach(({ asset, className }) => {
+            if (!asset || !asset.id || !asset.type || !asset.ext) return;
+
+            const assetUrl = buildCloudinaryUrl(asset);
+            if (!assetUrl) return;
+
             const item = document.createElement('div');
             item.className = className ? `vibe-item ${className}` : 'vibe-item';
             item.dataset.type = asset.type;
-            item.dataset.src = buildCloudinaryUrl(asset);
+            item.dataset.src = assetUrl;
             item.dataset.hydrated = 'false';
 
             if (asset.type === 'video') {
