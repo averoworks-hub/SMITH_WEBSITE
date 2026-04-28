@@ -329,8 +329,9 @@
         }
         .vibe-item img,
         .vibe-item video {
+            width: 100%;
             height: 100%;
-            width: auto;
+            object-fit: cover;
             display: block;
             filter: grayscale(0.5) brightness(0.8);
             transition:
@@ -925,6 +926,7 @@
 
         <!-- Cinematic video background -->
         <video
+            id="heritage-bg-video"
             autoplay muted loop playsinline preload="metadata"
             style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.4;filter:grayscale(0.8) brightness(0.7) contrast(1.2);z-index:-1;pointer-events:none;"
         >
@@ -1109,79 +1111,7 @@
 
             <!-- Film strip card -->
             <div class="vibe-strip-card" data-reveal data-reveal-delay="300">
-                <div class="vibe-strip" id="vibe-strip">
-
-                    <!-- 1 · FEATURED — hero opener, 600px wide, cover-fill -->
-                    <div class="vibe-item vibe-featured" data-type="image" data-src="assets/images/vibe-9.jpg">
-                        <img src="assets/images/vibe-9.jpg" alt="Vibe" loading="lazy">
-                    </div>
-
-                    <!-- 2 · Image -->
-                    <div class="vibe-item" data-type="image" data-src="assets/images/vibe-1.jpg">
-                        <img src="assets/images/vibe-1.jpg" alt="Vibe" loading="lazy">
-                    </div>
-
-                    <!-- 3 · Image -->
-                    <div class="vibe-item" data-type="image" data-src="assets/images/vibe-2.jpg">
-                        <img src="assets/images/vibe-2.jpg" alt="Vibe" loading="lazy">
-                    </div>
-
-                    <!-- 4 · Video -->
-                    <div class="vibe-item" data-type="video" data-src="assets/videos/vibe-vid-2.mp4">
-                        <video autoplay muted loop playsinline preload="metadata" loading="lazy" data-deferred-video>
-                            <source data-src="assets/videos/vibe-vid-2.mp4#t=0.1" type="video/mp4">
-                        </video>
-                        <div class="vibe-play-badge">
-                            <svg width="9" height="11" viewBox="0 0 9 11" fill="white"><path d="M0 0L9 5.5L0 11Z"/></svg>
-                        </div>
-                    </div>
-
-                    <!-- 5 · Image -->
-                    <div class="vibe-item" data-type="image" data-src="assets/images/vibe-3.jpg">
-                        <img src="assets/images/vibe-3.jpg" alt="Vibe" loading="lazy">
-                    </div>
-
-                    <!-- 6 · Image -->
-                    <div class="vibe-item" data-type="image" data-src="assets/images/vibe-5.jpg">
-                        <img src="assets/images/vibe-5.jpg" alt="Vibe" loading="lazy">
-                    </div>
-
-                    <!-- 7 · Image -->
-                    <div class="vibe-item" data-type="image" data-src="assets/images/vibe-6.jpg">
-                        <img src="assets/images/vibe-6.jpg" alt="Vibe" loading="lazy">
-                    </div>
-
-                    <!-- 8 · Video -->
-                    <div class="vibe-item" data-type="video" data-src="assets/videos/vibe-vid-6.mp4">
-                        <video autoplay muted loop playsinline preload="metadata" loading="lazy" data-deferred-video>
-                            <source data-src="assets/videos/vibe-vid-6.mp4#t=0.1" type="video/mp4">
-                        </video>
-                        <div class="vibe-play-badge">
-                            <svg width="9" height="11" viewBox="0 0 9 11" fill="white"><path d="M0 0L9 5.5L0 11Z"/></svg>
-                        </div>
-                    </div>
-
-                    <!-- 9 · Image — zoom fill (object-fit cover + scale 1.3) -->
-                    <div class="vibe-item vibe-zoom" data-type="image" data-src="assets/images/vibe-7.jpg">
-                        <img src="assets/images/vibe-7.jpg" alt="Vibe" loading="lazy">
-                    </div>
-
-                    <!-- 10 · Image -->
-                    <div class="vibe-item" data-type="image" data-src="assets/images/vibe-8.jpg">
-                        <img src="assets/images/vibe-8.jpg" alt="Vibe" loading="lazy">
-                    </div>
-
-                    <!-- 11 · Video — standard, no zoom -->
-                    <div class="vibe-item" data-type="video" data-src="assets/videos/vibe-vid-7.mp4">
-                        <video autoplay muted loop playsinline preload="metadata" loading="lazy" data-deferred-video>
-                            <source data-src="assets/videos/vibe-vid-7.mp4#t=0.1" type="video/mp4">
-                        </video>
-                        <div class="vibe-play-badge">
-                            <svg width="9" height="11" viewBox="0 0 9 11" fill="white"><path d="M0 0L9 5.5L0 11Z"/></svg>
-                        </div>
-                    </div>
-
-                </div><!-- /vibe-strip -->
+                <div class="vibe-strip" id="vibe-strip"></div><!-- /vibe-strip -->
             </div><!-- /vibe-strip-card -->
 
         </div>
@@ -1437,186 +1367,249 @@
       { id: 'vibe-vid-7_ac6dz3', type: 'video', ext: 'mov' }
     ];
 
-    const DJ_VIBE_ASSET_MAP = {
-        'vibe-9.jpg': DJ_VIBE_VIDEOS[0],
-        'vibe-1.jpg': DJ_VIBE_VIDEOS[1],
-        'vibe-2.jpg': DJ_VIBE_VIDEOS[2],
-        'vibe-3.jpg': DJ_VIBE_VIDEOS[3],
-        'vibe-8.jpg': DJ_VIBE_VIDEOS[4],
-        'vibe-7.jpg': DJ_VIBE_VIDEOS[5],
-        'vibe-6.jpg': DJ_VIBE_VIDEOS[6],
-        'vibe-5.jpg': DJ_VIBE_VIDEOS[7],
-        'vibe-vid-2.mp4': DJ_VIBE_VIDEOS[8],
-        'vibe-vid-6.mp4': DJ_VIBE_VIDEOS[9],
-        'vibe-vid-7.mp4': DJ_VIBE_VIDEOS[10]
-    };
+    const VIBE_STRIP_ITEMS = [
+        { asset: DJ_VIBE_VIDEOS[0], className: 'vibe-featured' },
+        { asset: DJ_VIBE_VIDEOS[1], className: '' },
+        { asset: DJ_VIBE_VIDEOS[2], className: '' },
+        { asset: DJ_VIBE_VIDEOS[8], className: '' },
+        { asset: DJ_VIBE_VIDEOS[3], className: '' },
+        { asset: DJ_VIBE_VIDEOS[7], className: '' },
+        { asset: DJ_VIBE_VIDEOS[6], className: '' },
+        { asset: DJ_VIBE_VIDEOS[9], className: '' },
+        { asset: DJ_VIBE_VIDEOS[5], className: 'vibe-zoom' },
+        { asset: DJ_VIBE_VIDEOS[4], className: '' },
+        { asset: DJ_VIBE_VIDEOS[10], className: '' }
+    ];
 
     function buildCloudinaryUrl(item) {
         if (!item) return '';
-        if (item.type === 'video') {
-            return CLOUDINARY_BASE + 'video/upload/v1/' + item.id + '.' + item.ext + '#t=0.1';
-        }
-        return CLOUDINARY_BASE + 'image/upload/v1/' + item.id + '.' + item.ext;
+        const basePath = item.type === 'video'
+            ? CLOUDINARY_BASE + 'video/upload/v1/'
+            : CLOUDINARY_BASE + 'image/upload/v1/';
+        const assetUrl = basePath + item.id + '.' + item.ext;
+        return item.type === 'video' ? assetUrl + '#t=0.1' : assetUrl;
     }
 
-    document.querySelectorAll('.vibe-item').forEach((item) => {
-        const originalPath = item.dataset.src || '';
-        const assetName = originalPath.split('/').pop();
-        const asset = DJ_VIBE_ASSET_MAP[assetName];
-        if (!asset) return;
+    async function verifyCloudinaryAsset(url, type) {
+        try {
+            const response = await fetch(url, { method: 'HEAD' });
+            if (!response.ok) {
+                console.error(`[Cloudinary ${type} ${response.status}] ${url}`);
+                return false;
+            }
+            return true;
+        } catch (error) {
+            console.error(`[Cloudinary ${type} fetch failed] ${url}`, error);
+            return false;
+        }
+    }
 
-        const assetUrl = buildCloudinaryUrl(asset);
-        item.dataset.src = assetUrl;
+    function createVibePlayBadge() {
+        const badge = document.createElement('div');
+        badge.className = 'vibe-play-badge';
+        badge.innerHTML = '<svg width="9" height="11" viewBox="0 0 9 11" fill="white"><path d="M0 0L9 5.5L0 11Z"/></svg>';
+        return badge;
+    }
 
-        if (asset.type === 'image') {
-            const img = item.querySelector('img');
-            if (img) img.src = assetUrl;
+    async function hydrateVibeItem(item) {
+        if (!item || item.dataset.hydrated === 'true' || item.dataset.hydrating === 'true') return;
+
+        const mediaUrl = item.dataset.src;
+        const mediaType = item.dataset.type;
+        if (!mediaUrl || !mediaType) return;
+
+        item.dataset.hydrating = 'true';
+        const isValid = await verifyCloudinaryAsset(mediaUrl, mediaType);
+        if (!isValid) {
+            item.dataset.hydrating = 'false';
             return;
         }
 
-        const source = item.querySelector('source');
-        if (source) {
-            source.dataset.src = assetUrl;
+        if (mediaType === 'video') {
+            const video = document.createElement('video');
+            video.src = mediaUrl;
+            video.autoplay = true;
+            video.muted = true;
+            video.loop = true;
+            video.playsInline = true;
+            video.preload = 'metadata';
+            video.setAttribute('preload', 'metadata');
+            video.setAttribute('playsinline', '');
+            video.setAttribute('muted', '');
+            video.setAttribute('loop', '');
+            video.addEventListener('error', () => {
+                console.error(`[Cloudinary video element failed] ${mediaUrl}`);
+            }, { once: true });
+            const badge = item.querySelector('.vibe-play-badge');
+            item.insertBefore(video, badge || null);
+        } else {
+            const img = document.createElement('img');
+            img.src = mediaUrl;
+            img.alt = 'Vibe';
+            img.loading = 'lazy';
+            img.addEventListener('error', () => {
+                console.error(`[Cloudinary image element failed] ${mediaUrl}`);
+            }, { once: true });
+            item.appendChild(img);
         }
-    });
+
+        item.dataset.hydrated = 'true';
+        item.dataset.hydrating = 'false';
+    }
+
+    function renderVibeStripItems() {
+        const strip = document.getElementById('vibe-strip');
+        if (!strip) return [];
+
+        strip.innerHTML = '';
+
+        VIBE_STRIP_ITEMS.forEach(({ asset, className }) => {
+            const item = document.createElement('div');
+            item.className = className ? `vibe-item ${className}` : 'vibe-item';
+            item.dataset.type = asset.type;
+            item.dataset.src = buildCloudinaryUrl(asset);
+            item.dataset.hydrated = 'false';
+
+            if (asset.type === 'video') {
+                item.appendChild(createVibePlayBadge());
+            }
+
+            strip.appendChild(item);
+        });
+
+        return Array.from(strip.querySelectorAll('.vibe-item'));
+    }
 
     // ── Vibe Film Strip — drag-scroll, hover-play & lightbox ─────────
-        (function () {
-            const items   = Array.from(document.querySelectorAll('.vibe-item'));
-            const strip   = document.getElementById('vibe-strip');
-            const lb      = document.getElementById('vibe-lb');
-            const lbMedia = document.getElementById('vibe-lb-media');
-            const lbClose = document.getElementById('vibe-lb-close');
-            const lbPrev  = document.getElementById('vibe-lb-prev');
-            const lbNext  = document.getElementById('vibe-lb-next');
-            const lbCount = document.getElementById('vibe-lb-counter');
-            const deferredVideos = Array.from(document.querySelectorAll('video[data-deferred-video]'));
-            if (!lb) return;
-            let cur = 0, didDrag = false;
+    (function () {
+        const strip   = document.getElementById('vibe-strip');
+        const lb      = document.getElementById('vibe-lb');
+        const lbMedia = document.getElementById('vibe-lb-media');
+        const lbClose = document.getElementById('vibe-lb-close');
+        const lbPrev  = document.getElementById('vibe-lb-prev');
+        const lbNext  = document.getElementById('vibe-lb-next');
+        const lbCount = document.getElementById('vibe-lb-counter');
+        if (!strip || !lb) return;
 
-            function ensureVideoLoaded(video) {
-                if (!video || video.dataset.loaded === 'true') return;
-                const source = video.querySelector('source[data-src]');
-                if (!source) {
-                    video.dataset.loaded = 'true';
-                    return;
-                }
-                source.src = source.dataset.src;
-                source.removeAttribute('data-src');
-                video.load();
-                video.dataset.loaded = 'true';
-            }
+        const items = renderVibeStripItems();
+        let cur = 0, didDrag = false;
 
-            if (deferredVideos.length) {
-                if ('IntersectionObserver' in window) {
-                    const videoObserver = new IntersectionObserver((entries, observer) => {
-                        entries.forEach((entry) => {
-                            if (!entry.isIntersecting) return;
-                            ensureVideoLoaded(entry.target);
-                            observer.unobserve(entry.target);
-                        });
-                    }, {
-                        rootMargin: '300px 0px',
-                        threshold: 0.01
-                    });
-                    deferredVideos.forEach(video => videoObserver.observe(video));
-                } else {
-                    deferredVideos.forEach(ensureVideoLoaded);
-                }
-            }
+        if ('IntersectionObserver' in window) {
+            const hydrateObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    hydrateVibeItem(entry.target);
+                    observer.unobserve(entry.target);
+                });
+            }, {
+                root: strip,
+                rootMargin: '150px',
+                threshold: 0.01
+            });
 
-            // Video tiles: play on hover, pause + reset on mouse-out
-            items.forEach(item => {
-                if (item.dataset.type !== 'video') return;
-                const vid = item.querySelector('video');
-                if (!vid) return;
+            items.forEach(item => hydrateObserver.observe(item));
+        } else {
+            items.forEach(hydrateVibeItem);
+        }
+
+        items.forEach((item, i) => {
+            if (item.dataset.type === 'video') {
                 item.addEventListener('mouseenter', () => {
-                    ensureVideoLoaded(vid);
-                    vid.play().catch(() => {});
+                    hydrateVibeItem(item);
+                    const vid = item.querySelector('video');
+                    if (vid) vid.play().catch(() => {});
                 });
-                item.addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
+                item.addEventListener('mouseleave', () => {
+                    const vid = item.querySelector('video');
+                    if (!vid) return;
+                    vid.pause();
+                    vid.currentTime = 0;
+                });
+            }
+
+            item.addEventListener('click', () => {
+                if (!didDrag) open(i);
             });
+        });
 
-            // Section cursor-glow — teal shimmer follows mouse inside #vibe
-            const vibeSection = document.getElementById('vibe');
-            if (vibeSection) {
-                vibeSection.addEventListener('mousemove', e => {
-                    const r = vibeSection.getBoundingClientRect();
-                    vibeSection.style.setProperty('--vibe-glow-x', (e.clientX - r.left) + 'px');
-                    vibeSection.style.setProperty('--vibe-glow-y', (e.clientY - r.top)  + 'px');
-                    vibeSection.classList.add('vibe-glow-on');
-                });
-                vibeSection.addEventListener('mouseleave', () => {
-                    vibeSection.classList.remove('vibe-glow-on');
-                });
-            }
-
-            // Drag-to-scroll (mouse only — touch handled natively)
-            if (strip) {
-                let isDown = false, startX = 0, scrollLeft = 0;
-                strip.addEventListener('mousedown', e => {
-                    isDown = true; didDrag = false;
-                    startX = e.pageX - strip.offsetLeft;
-                    scrollLeft = strip.scrollLeft;
-                    strip.style.cursor = 'grabbing';
-                });
-                const endDrag = () => { isDown = false; strip.style.cursor = 'grab'; };
-                strip.addEventListener('mouseup', endDrag);
-                strip.addEventListener('mouseleave', endDrag);
-                strip.addEventListener('mousemove', e => {
-                    if (!isDown) return;
-                    const walk = e.pageX - strip.offsetLeft - startX;
-                    if (Math.abs(walk) > 5) didDrag = true;
-                    strip.scrollLeft = scrollLeft - walk * 1.4;
-                });
-            }
-
-            // Lightbox — handles both images and videos
-            function open(idx) {
-                cur = (idx + items.length) % items.length;
-                const item = items[cur];
-                lbMedia.innerHTML = '';
-                const baseStyle = 'max-width:min(90vw,1100px);max-height:88vh;border-radius:6px;border:1px solid rgba(255,255,255,0.10);';
-                if (item.dataset.type === 'video') {
-                    const v = document.createElement('video');
-                    v.src = item.dataset.src;
-                    v.controls = true; v.autoplay = true; v.muted = true; v.playsInline = true; v.preload = 'metadata';
-                    v.style.cssText = baseStyle;
-                    lbMedia.appendChild(v);
-                } else {
-                    const img = document.createElement('img');
-                    img.src = item.dataset.src;
-                    img.alt = 'Vibe';
-                    img.style.cssText = baseStyle + 'object-fit:contain;';
-                    lbMedia.appendChild(img);
-                }
-                lbCount.textContent = (cur + 1) + ' / ' + items.length;
-                lb.classList.add('open');
-                document.body.style.overflow = 'hidden';
-            }
-
-            function close() {
-                const v = lbMedia.querySelector('video');
-                if (v) v.pause();
-                lb.classList.remove('open');
-                lbMedia.innerHTML = '';
-                document.body.style.overflow = '';
-            }
-
-            items.forEach((item, i) => item.addEventListener('click', () => { if (!didDrag) open(i); }));
-            lbClose.addEventListener('click', close);
-            lbPrev.addEventListener('click',  () => open(cur - 1));
-            lbNext.addEventListener('click',  () => open(cur + 1));
-            lb.addEventListener('click', e => { if (e.target === lb) close(); });
-            document.addEventListener('keydown', e => {
-                if (!lb.classList.contains('open')) return;
-                if (e.key === 'Escape')     close();
-                if (e.key === 'ArrowLeft')  open(cur - 1);
-                if (e.key === 'ArrowRight') open(cur + 1);
+        // Section cursor-glow — teal shimmer follows mouse inside #vibe
+        const vibeSection = document.getElementById('vibe');
+        if (vibeSection) {
+            vibeSection.addEventListener('mousemove', e => {
+                const r = vibeSection.getBoundingClientRect();
+                vibeSection.style.setProperty('--vibe-glow-x', (e.clientX - r.left) + 'px');
+                vibeSection.style.setProperty('--vibe-glow-y', (e.clientY - r.top)  + 'px');
+                vibeSection.classList.add('vibe-glow-on');
             });
-        })();
+            vibeSection.addEventListener('mouseleave', () => {
+                vibeSection.classList.remove('vibe-glow-on');
+            });
+        }
 
-        // ── Scroll Reveal ─────────────────────────────────────────────────
+        // Drag-to-scroll (mouse only — touch handled natively)
+        let isDown = false, startX = 0, scrollLeft = 0;
+        strip.addEventListener('mousedown', e => {
+            isDown = true; didDrag = false;
+            startX = e.pageX - strip.offsetLeft;
+            scrollLeft = strip.scrollLeft;
+            strip.style.cursor = 'grabbing';
+        });
+        const endDrag = () => { isDown = false; strip.style.cursor = 'grab'; };
+        strip.addEventListener('mouseup', endDrag);
+        strip.addEventListener('mouseleave', endDrag);
+        strip.addEventListener('mousemove', e => {
+            if (!isDown) return;
+            const walk = e.pageX - strip.offsetLeft - startX;
+            if (Math.abs(walk) > 5) didDrag = true;
+            strip.scrollLeft = scrollLeft - walk * 1.4;
+        });
+
+        // Lightbox — handles both images and videos
+        function open(idx) {
+            cur = (idx + items.length) % items.length;
+            const item = items[cur];
+            lbMedia.innerHTML = '';
+            const baseStyle = 'max-width:min(90vw,1100px);max-height:88vh;border-radius:6px;border:1px solid rgba(255,255,255,0.10);';
+            if (item.dataset.type === 'video') {
+                const v = document.createElement('video');
+                v.src = item.dataset.src;
+                v.controls = true; v.autoplay = true; v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'metadata';
+                v.style.cssText = baseStyle;
+                lbMedia.appendChild(v);
+            } else {
+                const img = document.createElement('img');
+                img.src = item.dataset.src;
+                img.alt = 'Vibe';
+                img.style.cssText = baseStyle + 'object-fit:contain;';
+                lbMedia.appendChild(img);
+            }
+            lbCount.textContent = (cur + 1) + ' / ' + items.length;
+            lb.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function close() {
+            const v = lbMedia.querySelector('video');
+            if (v) v.pause();
+            lb.classList.remove('open');
+            lbMedia.innerHTML = '';
+            document.body.style.overflow = '';
+        }
+
+        lbClose.addEventListener('click', close);
+        lbPrev.addEventListener('click',  () => open(cur - 1));
+        lbNext.addEventListener('click',  () => open(cur + 1));
+        lb.addEventListener('click', e => { if (e.target === lb) close(); });
+        document.addEventListener('keydown', e => {
+            if (!lb.classList.contains('open')) return;
+            if (e.key === 'Escape')     close();
+            if (e.key === 'ArrowLeft')  open(cur - 1);
+            if (e.key === 'ArrowRight') open(cur + 1);
+        });
+    })();
+
+    // ── Scroll Reveal ─────────────────────────────────────────────────
+
         (function () {
             const els = document.querySelectorAll('[data-reveal]');
             if (!els.length) return;
@@ -1629,6 +1622,20 @@
                 });
             }, { threshold: 0.12 });
             els.forEach(el => observer.observe(el));
+        })();
+
+        // ── Heritage Video Mobile Hardening ───────────────────────────
+        (function () {
+            const heritageVideo = document.getElementById('heritage-bg-video');
+            if (!heritageVideo) return;
+
+            if (/(iPhone|Android)/i.test(navigator.userAgent)) {
+                heritageVideo.setAttribute('playsinline', '');
+                heritageVideo.setAttribute('preload', 'metadata');
+                heritageVideo.playsInline = true;
+                heritageVideo.preload = 'metadata';
+                heritageVideo.load();
+            }
         })();
 
         // ── Social Dock — fade in after user scrolls past hero ────────────
