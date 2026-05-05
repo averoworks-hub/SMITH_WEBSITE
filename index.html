@@ -297,14 +297,6 @@
             -webkit-transform: translateZ(0);
         }
 
-        /* Heritage: video on desktop, static image on mobile — no JS needed */
-        .heritage-video-desktop { display: block; }
-        .heritage-img-mobile    { display: none;  }
-        @media (max-width: 1023px) {
-            .heritage-video-desktop { display: none;  }
-            .heritage-img-mobile    { display: block; }
-        }
-
         /* Film-grain texture — low-opacity SVG noise tiles over the strip */
         .vibe-strip-card::after {
             content: '';
@@ -349,6 +341,7 @@
         .vibe-item {
             position: relative;
             flex-shrink: 0;
+            width: 320px;
             overflow: hidden;
             cursor: pointer;
             border-radius: 8px;
@@ -450,6 +443,7 @@
                 display: none;
             }
             .vibe-item {
+                width: auto;
                 background-color: #0a0a0a;
                 aspect-ratio: 9 / 16;
                 margin: 0;
@@ -475,19 +469,6 @@
                 background:
                     radial-gradient(circle at center, rgba(255, 255, 255, 0.05), transparent 58%),
                     linear-gradient(180deg, #171717 0%, #0a0a0a 100%);
-            }
-            #heritage video[data-deferred-video] {
-                background: transparent;
-            }
-            #heritage::before {
-                content: '';
-                position: absolute;
-                inset: 0;
-                z-index: -2;
-                pointer-events: none;
-                background:
-                    radial-gradient(circle at 30% 30%, rgba(20, 184, 166, 0.10), transparent 38%),
-                    linear-gradient(180deg, rgba(34, 34, 34, 0.95), rgba(12, 12, 12, 0.98));
             }
         }
 
@@ -745,6 +726,13 @@
             /* extra bottom clearance on contact so the dock never sits over Send */
             #contact { padding-bottom: 8rem; }
         }
+
+        /* Heritage section — glass cards need extra blur/opacity over the video */
+        #heritage .glass-card {
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            background: rgba(5, 5, 5, 0.55);
+        }
     </style>
 </head>
 <body class="text-white antialiased">
@@ -963,37 +951,20 @@
     <!-- HERITAGE & PEDIGREE ────────────────────────────────────────────── -->
     <section id="heritage" class="relative py-24 px-6 md:px-20 border-b border-white/5 overflow-hidden">
 
-        <!-- Desktop: cinematic video background -->
+        <!-- Cinematic video background — all devices -->
         <video
             id="heritage-bg-video"
-            class="heritage-video-desktop"
             autoplay muted loop playsinline preload="metadata"
             poster="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto/v1/Press_Shot_1_bt5mib.jpg"
             style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.4;filter:grayscale(0.8) brightness(0.7) contrast(1.2);z-index:-1;pointer-events:none;"
         >
             <source src="./heritage-bg.mp4" type="video/mp4">
         </video>
-        <!-- Mobile: static image — zero video download cost -->
-        <img
-            class="heritage-img-mobile"
-            src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto/v1/Press_Shot_1_bt5mib.jpg"
-            alt=""
-            aria-hidden="true"
-            style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.4;filter:grayscale(0.8) brightness(0.7) contrast(1.2);pointer-events:none;"
-        >
         <!-- Radial vignette: fades hard edges to site background -->
         <div style="position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at center, transparent 35%, #050505 90%);"></div>
         <!-- Bottom gradient: smooth transition into next section -->
         <div style="position:absolute;bottom:0;left:0;right:0;height:120px;z-index:0;pointer-events:none;background:linear-gradient(to bottom, transparent, #050505);"></div>
 
-        <!-- Content sits above video — glass-card blur boosted for legibility over video -->
-        <style>
-            #heritage .glass-card {
-                backdrop-filter: blur(15px);
-                -webkit-backdrop-filter: blur(15px);
-                background: rgba(5, 5, 5, 0.55);
-            }
-        </style>
         <div class="relative z-10 max-w-7xl mx-auto">
 
             <p class="text-xs uppercase tracking-[0.5em] text-teal-500 font-bold mb-2 text-center" data-reveal>Background &amp; Achievements</p>
@@ -1118,7 +1089,6 @@
     </section>
 
     <!-- LIVE / TOUR DATES ───────────────────────────────────────────────── -->
-    <!-- LIVE ────────────────────────────────────────────────────────────── -->
     <section id="live" class="py-24 px-6 md:px-20 border-b border-white/5">
         <div class="max-w-4xl mx-auto">
 
@@ -1163,18 +1133,18 @@
                 <div class="vibe-strip" id="vibe-strip">
 
                     <!-- 1. vibe-9 — featured hero tile -->
-                    <div class="vibe-item vibe-featured" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-9_mr0vas.jpg">
-                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-9_mr0vas.jpg" alt="Vibe" loading="lazy">
+                    <div class="vibe-item vibe-featured" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-9_mr0vas.jpg">
+                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-9_mr0vas.jpg" alt="Vibe" loading="lazy">
                     </div>
 
                     <!-- 2. vibe-1 -->
-                    <div class="vibe-item" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-1_esf8yz.jpg">
-                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-1_esf8yz.jpg" alt="Vibe" loading="lazy">
+                    <div class="vibe-item" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-1_esf8yz.jpg">
+                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-1_esf8yz.jpg" alt="Vibe" loading="lazy">
                     </div>
 
                     <!-- 3. vibe-2 -->
-                    <div class="vibe-item" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-2_wjs3fd.jpg">
-                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-2_wjs3fd.jpg" alt="Vibe" loading="lazy">
+                    <div class="vibe-item" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-2_wjs3fd.jpg">
+                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-2_wjs3fd.jpg" alt="Vibe" loading="lazy">
                     </div>
 
                     <!-- 4. vibe-vid-2 — video -->
@@ -1186,18 +1156,18 @@
                     </div>
 
                     <!-- 5. vibe-3 -->
-                    <div class="vibe-item" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-3_ojdh7h.jpg">
-                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-3_ojdh7h.jpg" alt="Vibe" loading="lazy">
+                    <div class="vibe-item" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-3_ojdh7h.jpg">
+                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-3_ojdh7h.jpg" alt="Vibe" loading="lazy">
                     </div>
 
                     <!-- 6. vibe-5 -->
-                    <div class="vibe-item" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-5_uu611e.jpg">
-                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-5_uu611e.jpg" alt="Vibe" loading="lazy">
+                    <div class="vibe-item" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-5_uu611e.jpg">
+                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-5_uu611e.jpg" alt="Vibe" loading="lazy">
                     </div>
 
                     <!-- 7. vibe-6 -->
-                    <div class="vibe-item" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-6_jshyjh.jpg">
-                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-6_jshyjh.jpg" alt="Vibe" loading="lazy">
+                    <div class="vibe-item" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-6_jshyjh.jpg">
+                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-6_jshyjh.jpg" alt="Vibe" loading="lazy">
                     </div>
 
                     <!-- 8. vibe-vid-6 — video -->
@@ -1209,13 +1179,13 @@
                     </div>
 
                     <!-- 9. vibe-7 — zoom -->
-                    <div class="vibe-item vibe-zoom" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-7_uykgsi.jpg">
-                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-7_uykgsi.jpg" alt="Vibe" loading="lazy">
+                    <div class="vibe-item vibe-zoom" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-7_uykgsi.jpg">
+                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-7_uykgsi.jpg" alt="Vibe" loading="lazy">
                     </div>
 
                     <!-- 10. vibe-8 -->
-                    <div class="vibe-item" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-8_c4cmrx.jpg">
-                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_500/v1/vibe-8_c4cmrx.jpg" alt="Vibe" loading="lazy">
+                    <div class="vibe-item" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-8_c4cmrx.jpg">
+                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-8_c4cmrx.jpg" alt="Vibe" loading="lazy">
                     </div>
 
                     <!-- 11. vibe-vid-7 — video -->
