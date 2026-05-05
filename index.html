@@ -1160,17 +1160,12 @@
                         <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-3_ojdh7h.jpg" alt="Vibe" loading="lazy">
                     </div>
 
-                    <!-- 6. vibe-5 -->
-                    <div class="vibe-item" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-5_uu611e.jpg">
-                        <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-5_uu611e.jpg" alt="Vibe" loading="lazy">
-                    </div>
-
-                    <!-- 7. vibe-6 -->
+                    <!-- 6. vibe-6 -->
                     <div class="vibe-item" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-6_jshyjh.jpg">
                         <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-6_jshyjh.jpg" alt="Vibe" loading="lazy">
                     </div>
 
-                    <!-- 8. vibe-vid-6 — video -->
+                    <!-- 7. vibe-vid-6 — video -->
                     <div class="vibe-item" data-type="video" data-src="https://res.cloudinary.com/dradv9xl8/video/upload/f_auto,q_auto/v1/vibe-vid-6_s4gyss.mp4">
                         <video autoplay muted loop playsinline preload="none">
                             <source src="https://res.cloudinary.com/dradv9xl8/video/upload/f_auto,q_auto/v1/vibe-vid-6_s4gyss.mp4" type="video/mp4">
@@ -1178,17 +1173,17 @@
                         <div class="vibe-play-badge"><svg width="9" height="11" viewBox="0 0 9 11" fill="white"><path d="M0 0L9 5.5L0 11Z"/></svg></div>
                     </div>
 
-                    <!-- 9. vibe-7 — zoom -->
+                    <!-- 8. vibe-7 — zoom -->
                     <div class="vibe-item vibe-zoom" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-7_uykgsi.jpg">
                         <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-7_uykgsi.jpg" alt="Vibe" loading="lazy">
                     </div>
 
-                    <!-- 10. vibe-8 -->
+                    <!-- 9. vibe-8 -->
                     <div class="vibe-item" data-type="image" data-src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-8_c4cmrx.jpg">
                         <img src="https://res.cloudinary.com/dradv9xl8/image/upload/f_auto,q_auto,w_auto,c_limit,q_80/v1/vibe-8_c4cmrx.jpg" alt="Vibe" loading="lazy">
                     </div>
 
-                    <!-- 11. vibe-vid-7 — video -->
+                    <!-- 10. vibe-vid-7 — video -->
                     <div class="vibe-item" data-type="video" data-src="https://res.cloudinary.com/dradv9xl8/video/upload/f_auto,q_auto/v1/vibe-vid-7_ac6dz3.mov">
                         <video autoplay muted loop playsinline preload="none">
                             <source src="https://res.cloudinary.com/dradv9xl8/video/upload/f_auto,q_auto/v1/vibe-vid-7_ac6dz3.mov" type="video/mp4">
@@ -1457,7 +1452,15 @@
         const lbCount = document.getElementById('vibe-lb-counter');
         if (!strip || !lb) return;
 
-        // Items are static HTML — simply query them
+        // Items are static HTML — simply query them.
+        // Hide any tile whose image fails to load so it never shows as a dark block.
+        strip.querySelectorAll('.vibe-item img').forEach(img => {
+            img.addEventListener('error', () => {
+                const tile = img.closest('.vibe-item');
+                if (tile) tile.style.display = 'none';
+            }, { once: true });
+        });
+
         const items = Array.from(strip.querySelectorAll('.vibe-item'));
         let cur = 0, didDrag = false;
 
